@@ -1,6 +1,9 @@
 ---
-title: Welcome to Quartz
+title: "🔐 Pasindu's Cybersecurity Blog"
+date: 2025-04-13
 ---
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+![cover](pic.jpg)
+
+Writeups | Tips & Tricks | Resources
+...
