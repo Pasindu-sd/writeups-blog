@@ -71,7 +71,7 @@ Test Delays? → length > 2
 When it stops delaying (e.g., >20 delays, >21 does NOT delay), the password length = that number.
 - **Expected result:** Password length = **20 characters**
 
-### ## Step 5: Set Up Burp Intruder (Find Each Character)
+### Step 5: Set Up Burp Intruder (Find Each Character)
 
 Right-click on the request in Repeater → **Send to Intruder** (`Ctrl+I`)
 
