@@ -41,5 +41,3 @@ Vulnerability in the search functionality.
 The vulnerability exists because the search parameter is echoed directly into the HTML response without any sanitization or encoding, allowing arbitrary JavaScript execution.
 
 Lab solved with a simple `<script>alert(1)</script>` payload.
-
-
