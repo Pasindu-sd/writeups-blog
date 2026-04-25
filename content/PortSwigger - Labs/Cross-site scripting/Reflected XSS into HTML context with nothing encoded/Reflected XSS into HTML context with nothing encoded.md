@@ -33,3 +33,11 @@ Vulnerability in the search functionality.
 5. Once the alert appears, the lab is marked as Solved.
 
 ![[Pasted image 20260425130456.png]]
+
+
+
+
+### #Key_Takeaway
+The vulnerability exists because the search parameter is echoed directly into the HTML response without any sanitization or encoding, allowing arbitrary JavaScript execution.
+
+Lab solved with a simple `<script>alert(1)</script>` payload.
