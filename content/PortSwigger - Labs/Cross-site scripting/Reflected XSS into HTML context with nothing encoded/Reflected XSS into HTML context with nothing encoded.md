@@ -24,10 +24,12 @@ Vulnerability in the search functionality.
 ![[Pasted image 20260425130319.png]]
 
 
-- check Pop-up the alert message
+3. The application reflects the input without encoding, executing the script and triggering an alert box.
 
 ![[Pasted image 20260425130401.png]]
 
 ### Solved Lab
+
+5. Once the alert appears, the lab is marked as Solved.
 
 ![[Pasted image 20260425130456.png]]
