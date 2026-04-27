@@ -1,9 +1,10 @@
 
+# #PortSwigger
 
 ![[Pasted image 20260422181301.png]]
 
 
-## #Steps
+## Steps
 
 *" The results of the SQL query are not returned, and the application does not respond any differently based on whether the query returns any rows or causes an error. However, since the query is executed synchronously, it is possible to trigger conditional time delays to infer information. "*
 
@@ -306,7 +307,7 @@ BLIND SQL INJECTION TIME-BASED ATTACK
 
 
 
-## #Solved
+## Solved
 
 
 ![[Pasted image 20260422213330.png]]
