@@ -11,7 +11,7 @@
 **Key Techniques:** SMB Enumeration, .NET Decompilation, LDAP Enumeration, Resource-Based Constrained Delegation (RBCD)
 
 
-### #Enumeration
+### Enumeration
 
 #### rustscan
 
@@ -96,7 +96,7 @@ print(password)
 - **Domain:** `support.htb`
 - **Password:** `nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz`
 
-### #Foothold
+### Foothold
 
 Having obtained the above credentials, let's connect to the LDAP server and see if we can find any interesting information. To connect we can use the ldapsearch utility. Let's install it. 
 
