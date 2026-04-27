@@ -1,6 +1,7 @@
 
+# #PortSwigger 
 
-## #Steps
+## Steps
 ## Lab Description
 
 > _This lab stores user chat logs directly on the server's file system, and retrieves them using static URLs._
@@ -78,7 +79,7 @@ The lab shows the **"Congratulations, you solved the lab!"** banner.
 
 
 
-### #Extra-Knowledge
+### Extra Knowledge
 
 ## Attack Summary Diagram
 
