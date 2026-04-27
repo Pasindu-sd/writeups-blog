@@ -145,7 +145,7 @@ d95f34fd75e9b55036f427f3285553cb
 
 
 
-### #Privilege_Escalation
+### Privilege_Escalation
 Enumeration revealed the machine is the Domain Controller (`dc.support.htb`). BloodHound (via SharpHound) analysis showed that the **Shared Support Accounts** group—of which the `support` user is a member—has `GenericAll` privileges over the Domain Controller computer object. This misconfiguration allows for a **Resource-Based Constrained Delegation (RBCD)** attack.
 
 
@@ -268,7 +268,7 @@ export KRB5CCNAME=/tmp/ticket.ccache impacket-psexec -k -no-pass support.htb/adm
 
 ![[Pasted image 20260413222704.png]]
 
-## #RootFlag
+## RootFlag
 
 With a SYSTEM shell, the root flag was retrieved.
 
