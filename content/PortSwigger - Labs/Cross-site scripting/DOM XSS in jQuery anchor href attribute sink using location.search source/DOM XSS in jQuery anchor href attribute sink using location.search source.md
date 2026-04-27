@@ -51,6 +51,8 @@ Full URL Example:
     
 8. **The alert fires** showing the document cookie, and the lab is marked as **Solved**.
 
+![[Pasted image 20260428004859.png]]
+
 
 ### Solved
 ![[Pasted image 20260428004118.png]]
