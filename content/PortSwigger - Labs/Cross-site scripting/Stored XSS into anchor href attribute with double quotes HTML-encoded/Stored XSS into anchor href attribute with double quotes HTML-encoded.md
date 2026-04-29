@@ -12,21 +12,20 @@
 ### Solve Steps
 
 ### Step 1: Identify Vulnerability
-1. Access the Lab and iput any alphabetic character in the comment section
-2. Using DevTools , check where the input save
+1. 1. Access the Lab and input any alphabetic character in the comment section
+2. Using DevTools, check where the input is saved
 ![[Pasted image 20260429134632.png]]
 
 
 
 ### Step 2: Break test
-1. try simple payload:
-		`test"123`
-2. check where the input save and HTML break
+1. try simple payload: `test"123`
+2. check where the input is save and HTML break
 ![[Pasted image 20260429141301.png]]
 	
-	it means :
-		No input sanitize
-		Vulnerability chance HIGH
+It means :
+- No input sanitize
+- Vulnerability chance HIGH
 
 
 
