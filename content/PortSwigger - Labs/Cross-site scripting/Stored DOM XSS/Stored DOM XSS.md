@@ -23,7 +23,9 @@
 
 
 2. checks where the user feedback process in JS
+
 ![[Pasted image 20260505201822.png]]
+
 - **The problem:** `replace()` with a string only targets the **first match**.
 
 |Input|Result|Issue|
