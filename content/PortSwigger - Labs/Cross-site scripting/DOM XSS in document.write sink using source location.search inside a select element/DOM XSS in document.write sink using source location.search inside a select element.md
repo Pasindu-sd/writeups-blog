@@ -21,8 +21,6 @@ On product pages, JavaScript extracts a `storeId` parameter from the URL and u
 ### Step 2: Test with a Random String
 
 Add a `storeId` query parameter to the URL with a random alphanumeric string:
-![[Pasted image 20260504214052.png]]
-
 
 ![[Pasted image 20260504214157.png]]
 
