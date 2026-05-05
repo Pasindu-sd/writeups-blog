@@ -68,7 +68,7 @@ The actual payload <img src=1 onerror=alert(1)> survives!
 
 
 
-### Step 3: ### Enter the Comment
+### Step 3: Enter the Comment
 
 1. Go to any blog post
 2. Scroll down to the comment section
