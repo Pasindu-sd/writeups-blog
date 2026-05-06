@@ -7,7 +7,7 @@
 # HTB: CodePartTwo
 
 **Machine IP:** `10.129.232.59`  
-**Difficulty:** Medium  
+**Difficulty:** Easy 
 **OS:** Linux
 
 ---
