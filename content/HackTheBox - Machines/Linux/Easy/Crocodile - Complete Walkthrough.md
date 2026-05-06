@@ -2,7 +2,7 @@
 # #HTB 
 
 
-![[Pasted image 20251228193812.png|264]]
+![[Pasted image 20251228193812.png|281]]
 
 
 

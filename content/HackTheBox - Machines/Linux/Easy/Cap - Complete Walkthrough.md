@@ -2,7 +2,7 @@
 # #HTB 
 
 
-![[Pasted image 20260103110325.png|300]]
+![[Pasted image 20260103110325.png|286]]
 
 
 # HTB: Cap - Complete Walkthrough
