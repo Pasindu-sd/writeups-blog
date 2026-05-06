@@ -26,7 +26,6 @@
 
 
 
-
 ### Step 2: Construct the Payload
 
 Since backslashes aren't escaped, you can use a backslash to **escape the escaping backslash** before the single quote!
@@ -36,7 +35,7 @@ Since backslashes aren't escaped, you can use a backslash to **escape the escap
 \'-alert(1);//
 ```
 
-![[Pasted image 20260506171247.png]]
+
 
 
 
