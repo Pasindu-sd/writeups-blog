@@ -12,6 +12,16 @@
 
 ---
 
+## Tools Used
+- `rustscan` / `nmap` - Port discovery
+- `de4js` - JavaScript deobfuscation
+- `curl` - API interaction
+- `jq` - JSON parsing
+- `base64` / `rot13` - Encoding/decoding
+- `nc` - Reverse shell listener
+- `ssh` - Remote access
+- `scp` - File transfer
+- `gcc` / `make` - Exploit compilation
 
 ---
 
