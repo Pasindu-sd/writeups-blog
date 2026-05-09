@@ -166,3 +166,36 @@ Create an exploit that:
 
 
 ---
+
+## Why This Works
+
+|Component|Attacker's Value|Victim Gets|
+|---|---|---|
+|`csrf` cookie|`fake`|Injected via CRLF|
+|`csrf` body param|`fake`|Hardcoded in form|
+|Session cookie|N/A|Victim's own session|
+
+The server only checks that the two values match — it doesn't check if they are **valid** or **tied to the session**!
+
+---
+
+## Key Points
+
+|Requirement|Value|
+|---|---|
+|HTTP Method|`POST`|
+|Endpoint|`/my-account/change-email`|
+|Cookie to inject|`csrf=fake`|
+|Body parameter|`csrf=fake` (must match cookie)|
+|Injection vector|Search CRLF vulnerability|
+
+---
+
+## Important Notes
+
+1. **The cookie and body token must match** — both set to `fake`
+2. **CRLF injection** (`%0d%0a`) allows setting arbitrary cookies
+3. **`SameSite=None`** ensures the cookie is sent in cross-origin requests
+4. **Test on yourself first** to verify it works
+
+---
