@@ -6,7 +6,7 @@
 # HTB: Archetype
 
 **Machine IP:** `10.129.14.229`  
-**Difficulty:** Easy  
+**Difficulty:** Very Easy  
 **OS:** Windows (Server 2019 Standard)
 
 ---

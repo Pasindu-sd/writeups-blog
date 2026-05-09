@@ -1,7 +1,7 @@
-# #HTB
 
+# #HTB 
 
-![[Pasted image 20260413140746.png]]
+![[Pasted image 20260413140746.png|245]]
 
 ## HTB: Support Writeup
 
@@ -10,6 +10,8 @@
 **OS:** Windows  
 **Key Techniques:** SMB Enumeration, .NET Decompilation, LDAP Enumeration, Resource-Based Constrained Delegation (RBCD)
 
+
+---
 
 ### Enumeration
 
@@ -34,13 +36,13 @@ Anonymous access was allowed on the SMB service, revealing a non-standard share 
 check the support-tools share , because it can be includes credentials, support-tools using IT teams. it may be have important something
 
 Why NOT SYSVOL first?
-👉 SYSVOL important එකක් ✔️  
+ SYSVOL important  
 BUT:
 - Usually structured (policies only)
-- Sometimes boring 😅
-👉 support-tools:
+- Sometimes boring 
+ support-tools:
 - messy
-- human mistakes 😏
+- human mistakes 
 - more chance for creds
 
 Within the share, an archive named `UserInfo.exe.zip` stood out among the common utilities.
@@ -50,7 +52,7 @@ Within the share, an archive named `UserInfo.exe.zip` stood out among the comm
 After extracting the archive, `file` command identified the binary as a `.NET assembly`
 
 Important finding: -> UserInfo.exe.zip
-it can be hold "UserInfo", "Backup", "Config", "Notes" වගේ names = HIGH VALUE TARGET
+it can be hold like "UserInfo", "Backup", "Config", "Notes"  names = HIGH VALUE TARGET
 
 - unzip the UserInfo.exe.zip file
 - then find base64 encryption code
@@ -279,3 +281,6 @@ With a SYSTEM shell, the root flag was retrieved.
 ### Conclusion
 
 **Support** was an excellent Active Directory machine focusing on common misconfigurations. It reinforced the importance of inspecting non-standard SMB shares, analyzing custom binaries for hardcoded secrets, and understanding complex AD attack paths like RBCD. The ability to pivot from an LDAP reader account to a Domain Admin via delegation abuse makes this a valuable learning experience.
+
+
+---
