@@ -17,18 +17,12 @@
 ## Step 1: Understanding the Vulnerability
 
 **This lab combines:**
-
-1. **HTMLJanitor** — a client-side HTML sanitizer
-    
-2. **DOM clobbering** — polluting global variables/properties
-    
-3. **Attribute clobbering** — specifically clobbering the `attributes` property of a DOM element
-    
+1. **HTMLJanitor** - a client-side HTML sanitizer
+2. **DOM clobbering** - polluting global variables/properties
+3. **Attribute clobbering** - specifically clobbering the `attributes` property of a DOM element
 
 **The key insight:**
-
 - HTMLJanitor checks the `attributes` property of elements to filter dangerous attributes
-    
 - If we can **clobber** the `attributes` property, the filter breaks
-    
 - We can then inject arbitrary attributes (like `onfocus`)
+
