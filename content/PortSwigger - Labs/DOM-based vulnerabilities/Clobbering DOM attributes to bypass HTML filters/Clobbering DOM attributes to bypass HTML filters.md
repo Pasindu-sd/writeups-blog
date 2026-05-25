@@ -129,7 +129,7 @@ https://lab.web-security-academy.net/post?postId=3#x
 When the page loads with `#x` in the URL:
 - Browser scrolls to element with `id="x"`
 - The element **receives focus**
-- `onfocus` event fires → `print()` executes
+- `onfocus` event fires --> `print()` executes
 
 ### Step 4.2: Delay Requirement
 
