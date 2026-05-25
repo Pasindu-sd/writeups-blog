@@ -174,7 +174,7 @@ The comment with our payload needs time to load before focusing.
 ![[Pasted image 20260526010148.png]]
 
 3. Replace `YOUR-LAB-ID` with your actual lab ID
-4. Ensure `postId=3` matches the post where you injected the comment
+4. Ensure `postId=4` matches the post where you injected the comment
 
 ### Step 5.3: Deliver the Exploit
 
