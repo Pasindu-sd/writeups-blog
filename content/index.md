@@ -3,7 +3,7 @@ title: "Pasindu Sandeepa"
 date: 2025-04-13
 ---
 
-![cover](pic6.png)
+![cover](pic7.png)
 
 # Cybersecurity Research & Writeups
 
