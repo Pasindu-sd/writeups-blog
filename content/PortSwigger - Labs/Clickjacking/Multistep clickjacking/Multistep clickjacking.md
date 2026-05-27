@@ -210,16 +210,21 @@ iframe {
 ```
 
 - Replace `YOUR-LAB-ID` with your actual lab ID.
+![[Pasted image 20260528001603.png]]
+
+---
 
 ## Step 8: Testing the Exploit
 
 1. **Store** the exploit
 2. **View exploit**
-3. **Hover over "Click me first"** — cursor should change to hand
-4. **Click "Click me first"** — this clicks the delete button
+3. **Hover over "Click me first"** - cursor should change to hand
+4. **Click "Click me first"** - this clicks the delete button
 5. **Confirmation dialog appears**
-6. **Hover over "Click me next"** — cursor should change to hand
-7. **Click "Click me next"** — this clicks "Yes" in confirmation
+6. **Hover over "Click me next"** - cursor should change to hand
+7. **Click "Click me next"** - this clicks "Yes" in confirmation
+
+![[Pasted image 20260528001709.png]]
 
 **Caution:** If aligned correctly, this will delete YOUR account! Use a test account or be prepared to reset.
 
@@ -230,8 +235,10 @@ iframe {
 1. Change text to user-friendly decoys (optional but recommended)
 2. Click **Store**
 3. Click **Deliver exploit to victim**
+![[Pasted image 20260528001621.png]]
+
 4. The victim clicks both decoys in sequence
-5. Their account is deleted → Lab solved
+5. Their account is deleted --> Lab solved
 
 ---
 
@@ -239,6 +246,7 @@ iframe {
 
 Success message displayed:
 
+![[Pasted image 20260528001516.png]]
 
 ---
 ---
