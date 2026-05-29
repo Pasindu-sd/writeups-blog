@@ -28,7 +28,7 @@
 - After login, the 2FA verification code is sent to the user's email
 - The `/login2` endpoint accepts a `mfa-code` parameter
 - The `verify` cookie contains the username being verified
-- No rate limiting → we can brute-force the 4-digit code
+- No rate limiting --> we can brute-force the 4-digit code
 
 ---
 
@@ -104,12 +104,9 @@ After successful login, you'll be prompted for the 2FA code. Capture `POST /log
 
 ### Step 5.3: Send to Intruder
 
-1. Right-click → **Send to Intruder**
-    
+1. Right-click --> **Send to Intruder**
 2. Clear all payload positions
-    
-3. Highlight the `mfa-code` value → **Add payload position**
-    
+3. Highlight the `mfa-code` value --> **Add payload position**
 
 ### Step 5.4: Configure Payload
 
@@ -123,17 +120,15 @@ After successful login, you'll be prompted for the 2FA code. Capture `POST /log
 ### Step 5.5: Configure Attack Settings
 
 To speed up (as shown in your screenshot ~28 requests/second):
-
 1. **Resource pool:** Create a pool with high thread count (e.g., 20-50)
-    
 2. **Grep - Match:** Add `302` or `Location: /my-account` to identify success
-    
 
 ### Step 5.6: Start the Attack
 
 Run the intruder attack. Monitor for a `302` redirect response.
 
 **From your screenshot:**
+
 ![[Pasted image 20251211160346.png]]
 
 The correct 2FA code for Carlos is **1636**.
