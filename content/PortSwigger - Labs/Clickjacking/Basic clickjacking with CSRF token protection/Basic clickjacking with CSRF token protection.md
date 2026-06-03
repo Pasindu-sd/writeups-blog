@@ -202,3 +202,7 @@ iframe {
 
 Success message displayed:
 
+![[Pasted image 20260527235528.png]]
+
+---
+---
