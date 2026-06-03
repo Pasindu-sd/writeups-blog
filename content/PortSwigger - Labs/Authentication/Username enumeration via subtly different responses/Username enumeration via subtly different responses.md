@@ -26,7 +26,7 @@
 |Invalid username|`Invalid username or password.` (with period)|
 |Valid username + wrong password|`Invalid username or password` (with trailing space, no period)|
 
-This is a classic **username enumeration** vulnerability. The difference is barely noticeable — a trailing space instead of a period — but enough to distinguish valid from invalid usernames.
+This is a classic **username enumeration** vulnerability. The difference is barely noticeable - a trailing space instead of a period - but enough to distinguish valid from invalid usernames.
 
 ---
 
@@ -76,18 +76,21 @@ This difference allows us to enumerate valid usernames.
 |Payload position|`username=§aaa§`|
 |Payload type|Simple list|
 |Payload values|Candidate usernames (provided list)|
+
 ![[Pasted image 20260603144259.png]]
 
 ### Step 3.3: Configure Grep-Extract
 
 We need to extract the error message to see the subtle difference.
 1. Go to **Settings** tab
+
 ![[Pasted image 20260603144826.png]]
 
 2. Under **Grep - Extract**, click **Add**
 3. In the response preview, find the error message
 4. Highlight the exact error message text (including the period or space)
 5. Burp will automatically configure the extraction settings
+
 ![[Pasted image 20260603145104.png]]
 
 **Example extraction configuration:**
@@ -131,6 +134,7 @@ username=app01&password=§invalid-password§
 1. Clear the username list
 2. Add the candidate passwords list
 3. Set payload position on `password`
+
 ![[Pasted image 20260603152456.png]]
 
 ### Step 4.3: Configure Detection Method
