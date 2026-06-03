@@ -202,15 +202,7 @@ iframe {
 
 Success message displayed:
 
-<<<<<<< Updated upstream
-
-
----
----
-
-=======
 ![[Pasted image 20260527235528.png]]
 
 ---
 ---
->>>>>>> Stashed changes
