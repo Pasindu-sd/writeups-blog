@@ -16,6 +16,7 @@
 > **Note:** The victim will be using Chrome so test your exploit on that browser.
 
 ---
+---
 
 ## Step 1: Understanding Clickjacking
 
