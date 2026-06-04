@@ -12,6 +12,8 @@
 	*Exploit flawed access controls that are based partly on the HTTP method of requests. Using the credentials `wiener:peter`, promote yourself to become an administrator.*
 
 
+---
+---
 
 
 ## Solution Steps

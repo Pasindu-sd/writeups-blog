@@ -6,8 +6,6 @@
 ![[Pasted image 20251216220100.png]]
 
 
----
-
 ## Description
 
 This lab controls access to certain admin functionality based on the `Referer` header. The server trusts the client-provided `Referer` header instead of properly authenticating the user's session.
@@ -27,6 +25,7 @@ The server uses the `Referer` header as the sole mechanism for access control:
 
 The flaw is that the `Referer` header is **client-controlled** and can be added to any request. The server never verifies that the user making the request is actually an administrator.
 
+---
 ---
 
 ## Solution Steps
