@@ -33,7 +33,7 @@ View the page source or intercept the response in Burp. You'll see a password fi
 
 
 
-## Step 2 — Change the `id` Parameter to `administrator`
+## Step 2 - Change the `id` Parameter to `administrator`
 
 Modify the URL to:  
 `/my-account?id=administrator`
@@ -47,7 +47,7 @@ Look at the response — you will now see the **administrator's account page**.
 
 
 
-## Step 3 — Extract the Administrator's Password
+## Step 3 - Extract the Administrator's Password
 
 In the response, locate the password input field:
 
@@ -55,7 +55,7 @@ In the response, locate the password input field:
 <input required type="password" name="password" value="i108gemp5jxNsv31pmb0">
 ```
 
-Copy the value — that is the administrator's plaintext password.
+Copy the value - that is the administrator's plaintext password.
 
 ![[Pasted image 20260510183028.png]]
 
@@ -63,7 +63,7 @@ Copy the value — that is the administrator's plaintext password.
 
 
 
-## Step 4 — Log In as Administrator
+## Step 4 - Log In as Administrator
 
 Go to the login page and use:
 - **Username:** `administrator`    
@@ -75,7 +75,7 @@ Go to the login page and use:
 
 
 
-## Step 5 — Delete `carlos`
+## Step 5 - Delete `carlos`
 
 Once logged in as administrator, navigate to the admin panel (often at `/admin`) or find the **Delete user** button next to `carlos`.  
 Click it.
@@ -84,7 +84,7 @@ Click it.
 
 
 
-## Step 6 — Lab Solved
+## Step 6 - Lab Solved
 
 You'll see:
 	**User deleted successfully!**  
@@ -94,14 +94,15 @@ You'll see:
 
 
 ---
+---
 
 ## Why This Works
 
-|Issue|Impact|
-|---|---|
-|No access control on `/my-account`|Any user can view any other user's account page|
-|Password is transmitted in HTML|Even if masked in UI, it's exposed in source|
-|No authorization check for `id` parameter|Direct object reference is manipulable|
+| Issue                                     | Impact                                          |
+| ----------------------------------------- | ----------------------------------------------- |
+| No access control on `/my-account`        | Any user can view any other user's account page |
+| Password is transmitted in HTML           | Even if masked in UI, it's exposed in source    |
+| No authorization check for `id` parameter | Direct object reference is manipulable          |
 
 This is a classic **IDOR + password disclosure** vulnerability.
 
