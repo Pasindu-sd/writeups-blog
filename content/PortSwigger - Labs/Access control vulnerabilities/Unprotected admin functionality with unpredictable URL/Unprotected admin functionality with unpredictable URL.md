@@ -20,6 +20,7 @@ The admin panel is not at a predictable path (like `/admin` or `/administrato
 Once you find the URL, there is **no authentication** protecting the admin panel.
 
 ---
+---
 
 
 ## Solution Steps

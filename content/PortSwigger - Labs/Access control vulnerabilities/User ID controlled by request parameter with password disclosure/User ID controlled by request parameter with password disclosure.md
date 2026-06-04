@@ -13,9 +13,9 @@ This lab has an insecure direct object reference (IDOR) vulnerability. The user 
 
 
 ---
+---
 
-
-## Step 1 — Log In and Inspect Your Own Account
+## Step 1 - Log In and Inspect Your Own Account
 
 Log in with `wiener:peter`.  
 Your account page is at:  

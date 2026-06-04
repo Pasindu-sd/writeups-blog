@@ -20,6 +20,7 @@ Many websites use `robots.txt` to tell search engine crawlers which pages **n
 The admin panel has **no access control**, meaning anyone who finds the path can access it.
 
 ----
+---
 
 
 ## Solution Steps
