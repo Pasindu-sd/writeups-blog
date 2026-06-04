@@ -12,9 +12,9 @@ This lab has an admin panel at `/admin` that is only accessible to users with 
 
 
 ---
+---
 
-
-## Step 1 — Log In and Observe
+## Step 1 - Log In and Observe
 
 Log in with `wiener:peter`.  
 Your account page shows a normal user profile:
@@ -28,7 +28,7 @@ Your account page shows a normal user profile:
 
 
 
-## Step 2 — Capture the Email Change Request
+## Step 2 - Capture the Email Change Request
 
 Use the "Update email" feature. Capture the request in Burp:
 
@@ -60,7 +60,7 @@ Notice that the response includes your `roleid`:
 
 
 
-## Step 3 — Modify the Request to Escalate Privileges
+## Step 3 - Modify the Request to Escalate Privileges
 
 Send the request to Burp Repeater.  
 Modify the JSON body to include `"roleid": 2`:
@@ -94,7 +94,7 @@ The response now shows:
 
 
 
-## Step 4 — Access the Admin Panel
+## Step 4 - Access the Admin Panel
 
 Now browse to `/admin`.  
 Because your `roleid` is now 2, you have access.
@@ -113,7 +113,7 @@ carlos - Delete
 
 
 
-## Step 5 — Delete `carlos`
+## Step 5 - Delete `carlos`
 
 Click the **Delete** button next to `carlos` (or send the DELETE request manually in Burp).
 
@@ -121,7 +121,7 @@ Click the **Delete** button next to `carlos` (or send the DELETE request man
 
 
 
-## Step 6 — Lab Solved 
+## Step 6 - Lab Solved 
 
 You'll see:
 
@@ -131,6 +131,7 @@ You'll see:
 ![[Pasted image 20251216175550.png]]
 
 
+---
 ---
 
 ## Why This Works
