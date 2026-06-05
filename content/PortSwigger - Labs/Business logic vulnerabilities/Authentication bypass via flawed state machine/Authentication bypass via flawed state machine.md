@@ -13,6 +13,7 @@ Then refresh page
 ![[Pasted image 20251217151043.png]]
 
 
+<<<<<<< Updated upstream
 ![[Pasted image 20251217152232.png]]
 
 
@@ -29,3 +30,7 @@ Then refresh page
 
 
 ![[Pasted image 20251217160744.png]]
+=======
+----
+---
+>>>>>>> Stashed changes
