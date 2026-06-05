@@ -10,7 +10,8 @@
 **Description**
 	*The admin panel uses a **multi-step process** to change a user's role. While some steps may check for admin privileges, **not all steps have access control**. This allows a non-admin user to skip the restricted steps and directly submit the final privileged request.*
 
-
+---
+---
 
 ## Solution Steps
 

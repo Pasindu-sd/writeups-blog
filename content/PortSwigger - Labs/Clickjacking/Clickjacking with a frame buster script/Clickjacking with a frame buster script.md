@@ -207,7 +207,7 @@ Replace:
 
 ---
 
-## Step 8: Testing the Exploit
+## Step 7: Testing the Exploit
 
 1. **Store** the exploit
 2. **View exploit** (be careful not to click!)
@@ -221,7 +221,7 @@ Replace:
 
 ---
 
-## Step 9: Delivering to the Victim
+## Step 8: Delivering to the Victim
 
 1. Click **Deliver exploit to victim**
 ![[Pasted image 20260527135433.png]]
@@ -233,7 +233,7 @@ Replace:
 
 ---
 
-## Step 10: Lab Solved
+## Step 9: Lab Solved
 
 Success message displayed:
 ![[Pasted image 20260527135526.png]]

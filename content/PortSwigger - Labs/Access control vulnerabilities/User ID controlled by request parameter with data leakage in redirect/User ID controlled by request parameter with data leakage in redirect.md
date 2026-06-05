@@ -19,7 +19,7 @@ This lab contains an access control vulnerability where **sensitive information
 **The flaw:** Even though the response is a redirect (302), the response **body still contains the API key** of the requested user before the redirect occurs. This is a **data leakage** vulnerability.
 
 ---
-
+---
 
 ## Solution Steps
 

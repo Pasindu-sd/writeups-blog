@@ -12,12 +12,12 @@
 This lab has an admin panel at `/admin` that is only accessible to administrators. Instead of using a server-side session or token, the application relies on a **client-side cookie** called `Admin` to determine privileges. This cookie is completely forgeable — no signing, no encryption, no validation.
 
 ---
+---
 
-
-## Step 1 — Log In and Explore
+## Step 1 - Log In and Explore
 
 Log in with `wiener:peter`.  
-Browse to `/admin` — you will see an access denied message (or be redirected).  
+Browse to `/admin` - you will see an access denied message (or be redirected).  
 You cannot access the admin panel yet.
 
 ![[Pasted image 20251216174557.png]]
@@ -27,7 +27,7 @@ You cannot access the admin panel yet.
 
 
 
-## Step 2 — Capture the Login Response
+## Step 2 - Capture the Login Response
 
 Use Burp Suite with **response interception** enabled.  
 Submit the login form and forward the request until you see the response.
@@ -46,7 +46,7 @@ This cookie tells the application whether the user is an admin.
 
 
 
-## Step 3 — Modify the Cookie
+## Step 3 - Modify the Cookie
 
 In Burp (or using a browser extension like **Cookie-Editor**), change the `Admin` cookie from `false` to `true`.
 
@@ -66,7 +66,7 @@ You can do this by either:
 
 
 
-## Step 4 — Access the Admin Panel
+## Step 4 - Access the Admin Panel
 
 Now browse to `/admin` again.  
 This time, because your `Admin=true` cookie is present, you will see the admin panel:
@@ -83,14 +83,14 @@ carlos - Delete
 
 
 
-## Step 5 — Delete `carlos`
+## Step 5 - Delete `carlos`
 
 Click the **Delete** button next to `carlos`.
 
 
 
 
-## Step 6 — Lab Solved
+## Step 6 - Lab Solved
 
 You'll see:
 
@@ -100,6 +100,7 @@ You'll see:
 ![[Pasted image 20251216174741.png]]
 
 
+---
 ---
 
 ## Why This Works

@@ -18,8 +18,7 @@ This lab has a **horizontal privilege escalation** vulnerability on the user a
 
 
 ---
-
-
+---
 
 ## Solution Steps
 

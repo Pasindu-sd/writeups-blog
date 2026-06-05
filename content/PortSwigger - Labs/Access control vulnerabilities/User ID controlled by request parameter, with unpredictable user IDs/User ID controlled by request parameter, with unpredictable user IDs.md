@@ -14,10 +14,10 @@ This lab uses **GUIDs** (globally unique identifiers) instead of sequential in
 
 
 ---
+---
 
 
-
-## Step 1 — Log In and Explore
+## Step 1 - Log In and Explore
 
 Log in with `wiener:peter`.  
 Your account page URL looks like:  
@@ -32,10 +32,10 @@ That GUID is **unpredictable**, but the lab gives you another way to find `car
 
 
 
-## Step 2 — Find Carlos's GUID via a Blog Post
+## Step 2 - Find Carlos's GUID via a Blog Post
 
 Navigate to the blog section. Find a post by `carlos`.  
-Click on `carlos` (the author name/link) — observe the URL in your browser or Burp:
+Click on `carlos` (the author name/link) - observe the URL in your browser or Burp:
 
 ```
 /blogs?userId=48802904-9da5-444f-8397-e5bcfdd684d8
@@ -49,7 +49,7 @@ Click on `carlos` (the author name/link) — observe the URL in your browser o
 
 
 
-## Step 3 — Access Carlos's Account Page
+## Step 3 - Access Carlos's Account Page
 
 Now visit your own account page but replace your GUID with carlos's GUID:
 
@@ -65,7 +65,7 @@ The server responds with **carlos's account page**, including his API key.
 
 
 
-## Step 4 — Extract the API Key
+## Step 4 - Extract the API Key
 
 In the response, locate the API key:
 
@@ -80,7 +80,7 @@ Your API Key is: 4iALtvJSwMONO79DpZkiVLvqXG3exE5d
 
 
 
-## Step 5 — Submit the API Key
+## Step 5 - Submit the API Key
 
 Go back to the lab description page.  
 Enter the API key in the submission field (or on the "Submit solution" button if present).
@@ -89,7 +89,7 @@ Enter the API key in the submission field (or on the "Submit solution" button if
 
 
 
-## Step 6 — Lab Solved 
+## Step 6 - Lab Solved 
 
 You'll see:
 	**Congratulations, you solved the lab!**
@@ -98,8 +98,9 @@ You'll see:
 
 
 ---
+---
 
-## hy This Works
+## Why This Works
 
 |Assumption|Reality|
 |---|---|

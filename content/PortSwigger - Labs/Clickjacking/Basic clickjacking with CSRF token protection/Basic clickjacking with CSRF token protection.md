@@ -16,6 +16,7 @@
 > **Note:** The victim will be using Chrome so test your exploit on that browser.
 
 ---
+---
 
 ## Step 1: Understanding Clickjacking
 
@@ -202,3 +203,7 @@ iframe {
 
 Success message displayed:
 
+![[Pasted image 20260527235528.png]]
+
+---
+---

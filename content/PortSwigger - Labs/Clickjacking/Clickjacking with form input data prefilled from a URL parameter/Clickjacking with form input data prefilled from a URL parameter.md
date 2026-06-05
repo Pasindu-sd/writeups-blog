@@ -155,7 +155,7 @@ Replace:
 
 ---
 
-## Step 7: Testing the Exploit
+## Step 6: Testing the Exploit
 
 1. **Store** the exploit
 2. **View exploit** (be careful not to click!)
@@ -166,7 +166,7 @@ Replace:
 
 ---
 
-## Step 8: Delivering to the Victim
+## Step 7: Delivering to the Victim
 
 1. Click **Deliver exploit to victim**
 2. The victim sees "Click me" and clicks it
@@ -176,7 +176,7 @@ Replace:
 
 ---
 
-## Step 9: Lab Solved
+## Step 8: Lab Solved
 
 Success message displayed:
 
