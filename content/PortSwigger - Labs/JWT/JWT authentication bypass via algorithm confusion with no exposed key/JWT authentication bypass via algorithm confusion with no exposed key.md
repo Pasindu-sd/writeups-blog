@@ -5,7 +5,7 @@
 ![[Pasted image 20260601202429.png]]
 
 
-## Lab Description (from PortSwigger)
+## Lab Description
 
 > This lab uses a JWT-based mechanism for handling sessions. It uses a robust RSA key pair to sign and verify tokens. However, due to implementation flaws, this mechanism is vulnerable to algorithm confusion attacks.
 > 
@@ -14,6 +14,7 @@
 > - **Your credentials:** `wiener:peter`
 > - The server's public key is **NOT exposed** via a standard endpoint
 
+---
 ---
 
 ## Step 1: Understanding the Challenge
@@ -49,7 +50,7 @@
 2. **Log in again** with `wiener:peter`
 3. Capture the new JWT session cookie
 4. Save it as `token2`
-![[Pasted image 20260601203223.png]]
+
 
 **Important:** You need **two different JWTs** signed by the same private key for the derivation to work.
 
