@@ -3,7 +3,7 @@ title: "Pasindu Sandeepa"
 date: 2025-04-13
 ---
 
-![cover](pic7.png)
+![[ChatGPT Image Jun 13, 2026, 11_16_59 PM 1.png]]
 
 # Cybersecurity Research & Writeups
 
