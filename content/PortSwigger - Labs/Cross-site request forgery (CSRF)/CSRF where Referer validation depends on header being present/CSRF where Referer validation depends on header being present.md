@@ -12,6 +12,7 @@ This lab's email change function has **no CSRF tokens**. Instead, it attempts t
 We can suppress the Referer header using the `referrerpolicy` meta tag or the `no-referrer` directive, allowing a cross-site POST request to succeed.
 
 ---
+---
 
 ## Step 1 - Log In and Capture the Request
 

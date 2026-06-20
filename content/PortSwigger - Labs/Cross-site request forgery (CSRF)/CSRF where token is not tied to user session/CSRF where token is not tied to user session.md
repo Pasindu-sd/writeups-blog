@@ -6,14 +6,15 @@
 
 
 
-**Description**
+### **Description**
 	*Use the exploit server to host an HTML page that uses a CSRF attack to change the viewer's email address. The CSRF token is **not tied to the user's session** — a token from one user can be used by another user.
 
 **Credentials:**
 - `wiener:peter`
 - `carlos:montoya`*
 
-
+---
+---
 
 ## Solution Steps
 

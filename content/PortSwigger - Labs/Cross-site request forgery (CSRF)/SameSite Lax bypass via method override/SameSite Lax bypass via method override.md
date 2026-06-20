@@ -13,7 +13,7 @@ This lab's email change function has **no CSRF tokens**, but the session cookie
 The challenge: the email change endpoint only accepts `POST` requests — normally. But if we can **override the HTTP method** to make a `GET` request behave like a `POST`, we can trigger the state change with a top-level navigation and include the victim's session cookie.
 
 ---
-
+---
 
 ## Step 1 — Investigate the Email Change Endpoint
 

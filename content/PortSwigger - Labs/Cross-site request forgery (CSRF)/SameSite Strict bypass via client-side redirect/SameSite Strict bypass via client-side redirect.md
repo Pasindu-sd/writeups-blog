@@ -18,8 +18,9 @@ However, the lab contains a **client-side redirect gadget** that can be abused
 4. The final destination is the email change endpoint (same-site, so cookie is sent)
 
 ---
+---
 
-## Step 1 — Investigate the Email Change Endpoint
+## Step 1 - Investigate the Email Change Endpoint
 
 Log in with `wiener:peter` and change your email. Capture the request:
 
@@ -42,8 +43,7 @@ Set-Cookie: session=...; HttpOnly; Secure; SameSite=Strict
 
 
 
-
-## Step 2 — Find a Gadget: Client-Side Redirect
+## Step 2 - Find a Gadget: Client-Side Redirect
 
 Browse to a blog post and submit a comment. Notice you're taken to a confirmation page:
 
@@ -70,7 +70,7 @@ The `postId` parameter is directly inserted into the redirect URL — **no va
 
 
 
-## Step 3 — Test Path Traversal in postId
+## Step 3 - Test Path Traversal in postId
 
 Visit the confirmation page with a manipulated `postId`:
 
@@ -99,7 +99,7 @@ This confirms: we can use `postId` to force a **same-site GET request** to a
 
 
 
-## Step 4 — Test That the Cookie Is Sent
+## Step 4 - Test That the Cookie Is Sent
 
 Create a simple exploit on the exploit server:
 
@@ -117,7 +117,7 @@ Store and view the exploit. You end up on your account page — **while logged 
 
 
 
-## Step 5 — Change Email Using GET Request
+## Step 5 - Change Email Using GET Request
 
 Check if the email change endpoint accepts GET requests. In Burp Repeater, convert the `POST` to `GET`:
 ```
@@ -133,7 +133,7 @@ Send it. It works! The endpoint allows email changes via GET.
 
 
 
-## Step 6 — Craft the Full Exploit
+## Step 6 - Craft the Full Exploit
 
 We need to chain:
 1. Navigate to `/post/comment/confirmation?postId=...`
@@ -154,7 +154,7 @@ Final payload:
 
 
 
-## Step 7 — Test the Exploit
+## Step 7 - Test the Exploit
 
 1. Paste the payload into the exploit server **Body** section
 2. Replace `YOUR-LAB-ID` with your actual lab ID
@@ -169,7 +169,7 @@ Your email should change. If it works, change the email address in the payload t
 
 
 
-## Step 8 — Deliver to Victim
+## Step 8 - Deliver to Victim
 
 Click **Deliver to victim**. After a few seconds, the lab solves.
 
@@ -179,7 +179,7 @@ Click **Deliver to victim**. After a few seconds, the lab solves.
 
 
 
-## Step 9 — Lab Solved 
+## Step 9 - Lab Solved 
 
 ![[Pasted image 20260511011046.png]]
 
