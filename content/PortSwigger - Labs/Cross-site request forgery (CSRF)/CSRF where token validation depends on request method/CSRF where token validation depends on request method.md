@@ -6,13 +6,13 @@
 
 
 
-**Description**
+### **Description**
 	*Use the exploit server to host an HTML page that uses a CSRF attack to change the viewer's email address. The server only validates CSRF tokens for certain HTTP methods.
 **Your credentials:** `wiener:peter`*
 	*The server implements CSRF protection by validating a **CSRF token** for `POST` requests. However, when the request method is changed to `GET`, the server **does not validate** the token, making it vulnerable to CSRF.*
 
-
-
+---
+---
 
 ## Solution Steps
 

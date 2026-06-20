@@ -12,7 +12,7 @@ This lab's email change function has **no CSRF tokens**. The session cookie has
 The lab also uses **OAuth-based login**. Visiting `/social-login` initiates the full OAuth flow, which **renews the session cookie** each time. By forcing the victim to refresh their cookie (via OAuth) just before the CSRF attack, we can bypass the 2-minute SameSite Lax restriction.
 
 ---
-
+----
 
 ## Step 1 - Study the Email Change Endpoint
 
