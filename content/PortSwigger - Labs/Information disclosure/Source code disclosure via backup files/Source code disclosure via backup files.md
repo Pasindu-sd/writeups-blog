@@ -12,6 +12,7 @@
 > **Objective:** Find the hidden backup directory and extract the database password from the leaked source code.
 
 ---
+---
 
 ## Step 1: Understanding Source Code Disclosure
 

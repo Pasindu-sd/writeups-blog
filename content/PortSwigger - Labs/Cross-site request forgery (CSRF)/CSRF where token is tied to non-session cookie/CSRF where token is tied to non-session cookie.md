@@ -23,8 +23,8 @@ The vulnerability is that the `csrfKey` cookie is **not strictly tied to the 
 Additionally, there is a **CRLF injection** vulnerability in the search functionality that allows you to set cookies.
 
 
-
-
+---
+----
 
 ## Solution Steps
 

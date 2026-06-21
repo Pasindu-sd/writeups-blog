@@ -25,7 +25,7 @@ Additionally, there is a **CRLF injection** vulnerability in the search functi
 
 
 ---
-
+---
 
 ## Solution Steps
 

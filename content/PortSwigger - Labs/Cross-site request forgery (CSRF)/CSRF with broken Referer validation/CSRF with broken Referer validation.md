@@ -12,7 +12,7 @@ This lab's email change function has **no CSRF tokens**. Instead, it validates 
 We can exploit this by including the target domain as a **query parameter** in the Referer URL. However, modern browsers strip query strings from the Referer header by default. We need to override this behavior using the `Referrer-Policy: unsafe-url` header.
 
 ---
-
+----
 
 ## Step 1 - Log In and Capture the Request
 
