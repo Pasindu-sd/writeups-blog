@@ -1,4 +1,8 @@
 
+# #PortSwigger 
+
+
+
 ![[Pasted image 20251223094519.png]]
 
 
@@ -6,7 +10,8 @@
 
 >The product category filter for this lab is powered by a MongoDB NoSQL database. It is vulnerable to NoSQL injection.
 >
-**Objective:** Perform a NoSQL injection attack that causes the application to display unreleased products.
+
+> **Objective:** Perform a NoSQL injection attack that causes the application to display unreleased products.
 
 ---
 ---
@@ -22,7 +27,6 @@
 GET /filter?category=Gifts HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 ```
-
 
 ![[Pasted image 20251223094542.png]]
 
