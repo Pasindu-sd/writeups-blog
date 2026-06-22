@@ -1,3 +1,6 @@
+---
+title: Cross-site request forgery (CSRF)
+---
 
 ## Cross-site request forgery (CSRF) - PortSwigger Practice Lab
 

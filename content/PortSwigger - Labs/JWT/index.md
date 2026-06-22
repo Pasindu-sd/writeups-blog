@@ -1,3 +1,6 @@
+---
+title: JWT
+---
 
 ## JWT - PortSwigger Practice Lab
 
