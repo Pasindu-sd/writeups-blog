@@ -1,4 +1,6 @@
-
+---
+title: "Access Control Vulnerabilities"
+---
 ## Access Control Vulnerability - PortSwigger Practice Lab
 
 
