@@ -8,6 +8,7 @@
 
 **Objective:** Find the password for the user `carlos` and log into their account.
 
+
 ## What is IDOR?
 
 **Insecure Direct Object Reference (IDOR)** is a access control vulnerability that occurs when an application exposes a direct reference to an internal object (like a file, database record, or key) without verifying if the user is authorized to access it.
