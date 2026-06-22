@@ -1,5 +1,25 @@
 
+# #PortSwigger 
+
+
+
 ![[Pasted image 20251213004337.png]]
+
+
+
+## Lab Description
+
+>This lab contains a blind SQL injection vulnerability. The application uses a tracking cookie for analytics and performs a SQL query containing the value of the submitted cookie. The results are not returned, and the application does not respond differently based on whether the query returns rows. However, if the SQL query causes an error, the application returns a custom error message.
+>
+>**Objective:** Exploit the blind SQL injection vulnerability to find the password of the administrator user, then log in.
+>
+>**Hint:** This lab uses an Oracle database.
+
+---
+---
+
+
+
 
 
 ![[Pasted image 20251213004400.png]]
@@ -9,18 +29,22 @@ Error
 ```
 TrackingId=K7Wu29qlAgXQ8yiE'
 ```
+
 ![[Pasted image 20251213004540.png]]
 
 
 ```
 TrackingId=K7Wu29qlAgXQ8yiE''
 ```
+
 ![[Pasted image 20251213004635.png]]
 
 
 ```
 TrackingId=K7Wu29qlAgXQ8yiE'||(SELECT '' FROM dual)||'
 ```
+
+
 ![[Pasted image 20251213005241.png]]
 
 
