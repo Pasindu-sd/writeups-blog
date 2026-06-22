@@ -1,3 +1,6 @@
+---
+title: Clickjacking
+---
 
 # Clickjacking - PortSwigger Practice Lab
 

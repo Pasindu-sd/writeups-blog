@@ -1,3 +1,6 @@
+---
+title: Authentication
+---
 
 ## Authentication - PortSwigger Practice Lab
 

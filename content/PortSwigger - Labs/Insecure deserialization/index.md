@@ -1,3 +1,6 @@
+---
+title: Insecure deserialization
+---
 
 ## Insecure Deserialization - PortSwigger Practice Lab
 

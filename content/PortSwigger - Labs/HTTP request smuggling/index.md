@@ -1,3 +1,6 @@
+---
+title: HTTP request smuggling
+---
 
 ## HTTP request smuggling - PortSwigger Practice Labs
 

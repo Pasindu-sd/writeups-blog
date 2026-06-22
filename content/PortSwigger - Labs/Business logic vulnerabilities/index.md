@@ -1,3 +1,6 @@
+---
+title: Business logic vulnerabilities
+---
 
 ## Business Logic Vulnerability - PortSwigger Lab
 

@@ -1,3 +1,6 @@
+---
+title: DOM-based vulnerabilities
+---
 
 ## DOM-Based Vulnerabilities  - PortSwigger Practice Lab
 

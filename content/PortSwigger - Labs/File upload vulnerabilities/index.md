@@ -1,3 +1,6 @@
+---
+title: File upload vulnerabilities
+---
 
 ## File Upload Vulnerability - PortSwigger Practice Lab
 

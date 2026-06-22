@@ -1,3 +1,6 @@
+---
+title: Cross-site scripting
+---
 
 ## Cross-site Scripting - PortSwigger Practice Lab
 

@@ -1,3 +1,6 @@
+---
+title: Information disclosure
+---
 
 ## Information Disclosure - PortSwigger Practice Lab
 

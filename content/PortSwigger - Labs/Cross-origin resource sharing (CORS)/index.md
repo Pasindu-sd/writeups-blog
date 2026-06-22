@@ -1,3 +1,6 @@
+---
+title: Cross-origin resource sharing (CORS)
+---
 
 ## Cross-origin resource sharing (CORS) - PortSwigger Practice Lab
 
