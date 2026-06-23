@@ -63,7 +63,7 @@ GET /filter?category=Gifts' UNION SELECT 'afsd','acvd'-- HTTP/1.1
 
 ---
 
-### Step 4: Retrieve Column Names
+### Step 3: Retrieve Column Names
 
 **Payload (replace table name):**
 ```
@@ -80,7 +80,7 @@ GET /filter?category=Gifts' UNION SELECT 'afsd','acvd'-- HTTP/1.1
 
 ---
 
-### Step 5: Retrieve Usernames and Passwords
+### Step 4: Retrieve Usernames and Passwords
 
 **Payload (replace table and column names):**
 ```
@@ -94,7 +94,7 @@ GET /filter?category=Gifts' UNION SELECT 'afsd','acvd'-- HTTP/1.1
 
 ---
 
-### Step 6: Log In as Administrator
+### Step 5: Log In as Administrator
 
 1. Go to the login page
 2. Username: `administrator`
@@ -104,7 +104,7 @@ GET /filter?category=Gifts' UNION SELECT 'afsd','acvd'-- HTTP/1.1
 
 ---
 
-### Step 7: Lab Solved
+### Step 6: Lab Solved
 
 ![[Pasted image 20251212204530.png]]
 
