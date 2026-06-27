@@ -5,7 +5,7 @@
 ![[Pasted image 20260613154611.png]]
 
 
-## Lab Description (from PortSwigger)
+## Lab Description
 
 > This lab uses the Freemarker template engine. It is vulnerable to server-side template injection due to its poorly implemented sandbox. To solve the lab, break out of the sandbox to read the file `my_password.txt` from Carlos's home directory. Then submit the contents of the file.
 > 
