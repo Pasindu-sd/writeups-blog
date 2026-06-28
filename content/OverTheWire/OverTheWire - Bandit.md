@@ -40,9 +40,7 @@ cat ./-
 **Goal:** Read a file that has spaces in its filename.
 
 ```bash
-cat "spaces in this filename"
-# or
-cat spaces\ in\ this\ filename
+cat ./"--spaces in this filename--"
 ```
 
 ---
