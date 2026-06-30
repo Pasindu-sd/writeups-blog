@@ -445,6 +445,42 @@ RYVux2rHEm9tiXHmLFzuR7Vhx6AZQMEz
 
 ## Level 22 -> 23
 
+```
+gKXDTAXnIz3OBxiPjRZ2uqutUlPZrBsw
+```
+
+![[Pasted image 20260701013108.png]]
+
+
+---
+
+## Level 23 -> 24
+
+```
+hVQMk3lJNsmQ7VF3ubyrNNBom7BOgVXv
+```
+
+![[Pasted image 20260701015347.png]]
+
+
+---
+
+## Level 24 -> 25
+
+```
+SoHfqMOEqIX2IYKVciZxvgpR9a2Djx4P
+```
+
+*`vim brute.sh`
+![[Pasted image 20260701021323.png]]
+
+```
+./brute.sh
+```
+
+![[Pasted image 20260701021416.png]]
+
+
 
 
 ---
