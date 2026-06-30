@@ -23,7 +23,7 @@ cat readme
 
 ## Level 1 → Level 2
 
-**Password:** `ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If`
+**Password:** `PK8fYLZg2hnHSz83plBL1iEPKdD3QToB`
 
 **Goal:** Read a file named `-` (dash). Since `-` is interpreted as stdin by most commands, you need to specify the path explicitly.
 
@@ -35,7 +35,7 @@ cat ./-
 
 ## Level 2 → Level 3
 
-**Password:** `263JcdLucbFp900kkjkLuao74GwNAMTa`
+**Password:** `7ZZ2LFrykP2zEyvBl4m3clcL7tGYJPME`
 
 **Goal:** Read a file that has spaces in its filename.
 
@@ -47,7 +47,7 @@ cat ./"--spaces in this filename--"
 
 ## Level 3 → Level 4
 
-**Password:** `2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ`
+**Password:** `xzTXq1rDJQVVAzdv5cHq1TQytTWufAMq`
 
 **Goal:** Find and read a hidden file inside the `inhere` directory.
 
@@ -62,7 +62,7 @@ cat inhere/.hidden
 
 ## Level 4 → Level 5
 
-**Password:** `4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw`
+**Password:** `6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG`
 
 **Goal:** Find the only human-readable file in the `inhere` directory among multiple files.
 
@@ -77,7 +77,7 @@ cat inhere/-file07
 
 ## Level 5 → Level 6
 
-**Password:** `HWasnPhtq9AVKe0dmk45nxy20cvUa6EG`
+**Password:** `pXa26xhMWaC2SvDotA4r9EgZkulOeSBW`
 
 **Goal:** Find a file with these properties: human-readable, 1033 bytes, not executable.
 
@@ -107,7 +107,7 @@ cat /var/lib/dpkg/info/bandit7.password
 
 ## Level 7 → Level 8
 
-**Password:** `dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc`
+**Password:** `VR1ljMayciFxbnUokuQmJFw6QC9VKtub`
 
 **Goal:** Find the password stored next to the word "millionth" in `data.txt`.
 
@@ -121,7 +121,7 @@ grep "millionth" data.txt
 
 ## Level 8 → Level 9
 
-**Password:** `4CKMh1JI91bUIZZPXDqGanal4xvAg0JM`
+**Password:** `EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl`
 
 **Goal:** Find the line that appears only once in `data.txt`.
 
@@ -135,7 +135,7 @@ sort data.txt | uniq -u
 
 ## Level 9 → Level 10
 
-**Password:** `FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey`
+**Password:** `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG`
 
 **Goal:** The password is one of the few human-readable strings in `data.txt`, preceded by several `=` characters.
 
@@ -149,7 +149,7 @@ strings data.txt | grep "=="
 
 ## Level 10 → Level 11
 
-**Password:** `dtR173fZKb0RRsDFSGsg2RWnpNVj3qRr`
+**Password:** `pYfOY6HwUsDj5rL9UvyhU7MCmv8vN5Ro`
 
 **Goal:** `data.txt` contains Base64 encoded data. Decode it to find the password.
 
@@ -163,7 +163,7 @@ base64 -d data.txt
 
 ## Level 11 → Level 12
 
-**Password:** `7x16WNeHIi5YkIhWsfFIqoognUTyj9Q4`
+**Password:** `GROozWPO8QyN0mGrjUkID0WCYkZiQxrN`
 
 **Goal:** `data.txt` has been encoded with ROT13. All letters have been rotated by 13 positions.
 
