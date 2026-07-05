@@ -41,47 +41,47 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 ## Authentication & Authorization
 
-| Lab                              | View     |
-| --------------------------------- | -------- |
-| Authentication                    | [View]() |
-| Access Control Vulnerabilities    | [View]() |
-| OAuth Vulnerabilities             | [View]() |
-| JWT                                | [View]() |
-| Business Logic Vulnerabilities    | [View]() |
+| Lab                            | View                                                                                                           |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Authentication                 | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FAuthentication%2Findex)                     |
+| Access Control Vulnerabilities | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FAccess%20control%20vulnerabilities%2Findex) |
+| OAuth Vulnerabilities          | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FOAuth%20authentication%2Findex)             |
+| JWT                            | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FJWT%2Findex)                                |
+| Business Logic Vulnerabilities | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FBusiness%20logic%20vulnerabilities%2Findex) |
 
 ---
 
 ## HTTP & Browser Security
 
-| Lab                              | View     |
-| --------------------------------- | -------- |
-| HTTP Host Header Attacks          | [View]() |
-| HTTP Request Smuggling            | [View]() |
-| Clickjacking                      | [View]() |
-| Information Disclosure            | [View]() |
-| WebSockets                         | [View]() |
+| Lab                      | View                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| HTTP Host Header Attacks | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FHTTP%20Host%20header%20attacks%2Findex) |
+| HTTP Request Smuggling   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FHTTP%20request%20smuggling%2Findex)     |
+| Clickjacking             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FClickjacking%2Findex)                   |
+| Information Disclosure   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FInformation%20disclosure%2Findex)       |
+| WebSockets               | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWebSockets%2Findex)                     |
 
 ---
 
 ## Caching & Serialization
 
-| Lab                              | View     |
-| --------------------------------- | -------- |
-| Web Cache Poisoning               | [View]() |
-| Web Cache Deception               | [View]() |
-| Insecure Deserialization          | [View]() |
+| Lab                      | View                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Web Cache Poisoning      | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWeb%20Cache%20Poisoning%2Findex)    |
+| Web Cache Deception      | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWeb%20cache%20deception%2Findex)    |
+| Insecure Deserialization | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FInsecure%20deserialization%2Findex) |
 
 ---
 
 ## Learning Resources
 
-| Resource                         | View     |
-| --------------------------------- | -------- |
-| Essential Skills                  | [View]() |
-| PortSwigger Lab Writeups          | [View]() |
-| Practical Exploitation Notes      | [View]() |
-| Security Research                 | [View]() |
-| Tips & Tricks                     | [View]() |
+| Resource                     | View                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| Essential Skills             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FEssential%20skills%2Findex) |
+| PortSwigger Lab Writeups     | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2Findex)                      |
+| Practical Exploitation Notes | [View](obsidian://open?vault=content&file=index)                                               |
+| Security Research            | [View](obsidian://open?vault=content&file=index)                                               |
+| Tips & Tricks                | [View](obsidian://open?vault=content&file=index)                                               |
 
 ---
 
