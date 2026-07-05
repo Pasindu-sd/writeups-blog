@@ -25,17 +25,17 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 | Lab                                   | View                                                                                                                    |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | SQL Injection                         | [[PortSwigger - Labs/SQL injection/index\|View]]                                                                        |
-| NoSQL Injection                       | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FNoSQL%20injection%2Findex)                           |
-| Cross-Site Scripting (XSS)            | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-site%20scripting%2Findex)                      |
-| DOM-Based Vulnerabilities             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FDOM-based%20vulnerabilities%2Findex)                 |
-| Cross-Site Request Forgery (CSRF)     | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-site%20request%20forgery%20(CSRF)%2Findex)     |
-| Cross-Origin Resource Sharing (CORS)  | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-origin%20resource%20sharing%20(CORS)%2Findex)  |
-| XML External Entity (XXE) Injection   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FXML%20external%20entity%20(XXE)%20injection%2Findex) |
-| Server-Side Request Forgery (SSRF)    | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FServer-side%20request%20forgery%20(SSRF)%2Findex)    |
-| Server-Side Template Injection (SSTI) | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FServer-side%20template%20injection%20(SSTI)%2Findex) |
-| OS Command Injection                  | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FOS%20command%20injection%2Findex)                    |
-| Path Traversal                        | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FPath%20traversal%2Findex)                            |
-| File Upload Vulnerabilities           | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FFile%20upload%20vulnerabilities%2Findex)             |
+| NoSQL Injection                       | [[PortSwigger - Labs/NoSQL injection/index\|View]]                                                                      |
+| Cross-Site Scripting (XSS)            | [[PortSwigger - Labs/Cross-site scripting/index\|View]]                                                                 |
+| DOM-Based Vulnerabilities             | [[PortSwigger - Labs/DOM-based vulnerabilities/index\|View]]                                                            |
+| Cross-Site Request Forgery (CSRF)     | [[PortSwigger - Labs/Cross-site request forgery (CSRF)/index\|View]]                                                     |
+| Cross-Origin Resource Sharing (CORS)  | [[PortSwigger - Labs/Cross-origin resource sharing (CORS)/index\|View]]                                                  |
+| XML External Entity (XXE) Injection   | [[PortSwigger - Labs/XML external entity (XXE) injection/index\|View]]                                                   |
+| Server-Side Request Forgery (SSRF)    | [[PortSwigger - Labs/Server-side request forgery (SSRF)/index\|View]]                                                    |
+| Server-Side Template Injection (SSTI) | [[PortSwigger - Labs/Server-side template injection (SSTI)/index\|View]]                                                 |
+| OS Command Injection                  | [[PortSwigger - Labs/OS command injection/index\|View]]                                                                   |
+| Path Traversal                        | [[PortSwigger - Labs/Path traversal/index\|View]]                                                                         |
+| File Upload Vulnerabilities           | [[PortSwigger - Labs/File upload vulnerabilities/index\|View]]                                                            |
 
 ---
 
@@ -43,11 +43,11 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 | Lab                            | View                                                                                                           |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| Authentication                 | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FAuthentication%2Findex)                     |
-| Access Control Vulnerabilities | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FAccess%20control%20vulnerabilities%2Findex) |
-| OAuth Vulnerabilities          | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FOAuth%20authentication%2Findex)             |
-| JWT                            | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FJWT%2Findex)                                |
-| Business Logic Vulnerabilities | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FBusiness%20logic%20vulnerabilities%2Findex) |
+| Authentication                 | [[PortSwigger - Labs/Authentication/index\|View]]                                                                   |
+| Access Control Vulnerabilities | [[PortSwigger - Labs/Access control vulnerabilities/index\|View]]                                                   |
+| OAuth Vulnerabilities          | [[PortSwigger - Labs/OAuth authentication/index\|View]]                                                             |
+| JWT                            | [[PortSwigger - Labs/JWT/index\|View]]                                                                              |
+| Business Logic Vulnerabilities | [[PortSwigger - Labs/Business logic vulnerabilities/index\|View]]                                                   |
 
 ---
 
@@ -55,11 +55,11 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 | Lab                      | View                                                                                                       |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| HTTP Host Header Attacks | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FHTTP%20Host%20header%20attacks%2Findex) |
-| HTTP Request Smuggling   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FHTTP%20request%20smuggling%2Findex)     |
-| Clickjacking             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FClickjacking%2Findex)                   |
-| Information Disclosure   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FInformation%20disclosure%2Findex)       |
-| WebSockets               | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWebSockets%2Findex)                     |
+| HTTP Host Header Attacks | [[PortSwigger - Labs/HTTP Host header attacks/index\|View]]                                                    |
+| HTTP Request Smuggling   | [[PortSwigger - Labs/HTTP request smuggling/index\|View]]                                                      |
+| Clickjacking             | [[PortSwigger - Labs/Clickjacking/index\|View]]                                                                |
+| Information Disclosure   | [[PortSwigger - Labs/Information disclosure/index\|View]]                                                      |
+| WebSockets               | [[PortSwigger - Labs/WebSockets/index\|View]]                                                                  |
 
 ---
 
@@ -67,9 +67,9 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 | Lab                      | View                                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| Web Cache Poisoning      | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWeb%20Cache%20Poisoning%2Findex)    |
-| Web Cache Deception      | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FWeb%20cache%20deception%2Findex)    |
-| Insecure Deserialization | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FInsecure%20deserialization%2Findex) |
+| Web Cache Poisoning      | [[PortSwigger - Labs/Web Cache Poisoning/index\|View]]                                                      |
+| Web Cache Deception      | [[PortSwigger - Labs/Web cache deception/index\|View]]                                                      |
+| Insecure Deserialization | [[PortSwigger - Labs/Insecure deserialization/index\|View]]                                                 |
 
 ---
 
@@ -77,11 +77,11 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 | Resource                     | View                                                                                           |
 | ---------------------------- | ---------------------------------------------------------------------------------------------- |
-| Essential Skills             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FEssential%20skills%2Findex) |
-| PortSwigger Lab Writeups     | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2Findex)                      |
-| Practical Exploitation Notes | [View](obsidian://open?vault=content&file=index)                                               |
-| Security Research            | [View](obsidian://open?vault=content&file=index)                                               |
-| Tips & Tricks                | [View](obsidian://open?vault=content&file=index)                                               |
+| Essential Skills             | [[PortSwigger - Labs/Essential skills/index\|View]]                                           |
+| PortSwigger Lab Writeups     | [[PortSwigger - Labs/index\|View]]                                                            |
+| Practical Exploitation Notes | [[index\|View]]                                                                                |
+| Security Research            | [[index\|View]]                                                                                |
+| Tips & Tricks                | [[index\|View]]                                                                                |
 
 ---
 
