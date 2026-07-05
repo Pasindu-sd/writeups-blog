@@ -25,9 +25,9 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 | Lab                                   | View                                                                                                                    |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | SQL Injection                         | [[PortSwigger - Labs/SQL injection/index\|View]]                                                                        |
-| NoSQL Injection                       | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FNoSQL%20injection%2Findex)                           |
-| Cross-Site Scripting (XSS)            | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-site%20scripting%2Findex)                      |
-| DOM-Based Vulnerabilities             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FDOM-based%20vulnerabilities%2Findex)                 |
+| NoSQL Injection                       | [[PortSwigger - Labs/NoSQL injection/index\|View]]                                                                      |
+| Cross-Site Scripting (XSS)            | [[PortSwigger - Labs/Cross-site scripting/index\|View]]                                                                 |
+| DOM-Based Vulnerabilities             | [[PortSwigger - Labs/DOM-based vulnerabilities/index\|View]]                                                            |
 | Cross-Site Request Forgery (CSRF)     | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-site%20request%20forgery%20(CSRF)%2Findex)     |
 | Cross-Origin Resource Sharing (CORS)  | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-origin%20resource%20sharing%20(CORS)%2Findex)  |
 | XML External Entity (XXE) Injection   | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FXML%20external%20entity%20(XXE)%20injection%2Findex) |
