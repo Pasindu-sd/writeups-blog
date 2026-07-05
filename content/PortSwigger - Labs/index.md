@@ -24,7 +24,7 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 | Lab                                   | View                                                                                                                    |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| SQL Injection                         | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FSQL%20injection%2Findex)                             |
+| SQL Injection                         | [[PortSwigger - Labs/SQL injection/index\|View]]                                                                        |
 | NoSQL Injection                       | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FNoSQL%20injection%2Findex)                           |
 | Cross-Site Scripting (XSS)            | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FCross-site%20scripting%2Findex)                      |
 | DOM-Based Vulnerabilities             | [View](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FDOM-based%20vulnerabilities%2Findex)                 |
