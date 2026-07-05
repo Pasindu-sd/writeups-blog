@@ -22,6 +22,14 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 
 ## Web Application Security
 
+
+| Lab           | View     |
+| ------------- | -------- |
+| SQL Injection | [View]() |
+|               |          |
+
+
+
 - SQL Injection
 - NoSQL Injection
 - Cross-Site Scripting (XSS)
@@ -85,9 +93,4 @@ Welcome to my personal cybersecurity knowledge base, where I document practical 
 - Bug Bounty Methodology
 
 ---
-
-
-| Lab                      | View                                                                                                    |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Web Application Security | [view](obsidian://open?vault=content&file=PortSwigger%20-%20Labs%2FDOM-based%20vulnerabilities%2Findex) |
 
