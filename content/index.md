@@ -32,4 +32,11 @@ Practical cybersecurity learning, web application security research, penetration
 
 ---
 
+## Writeups
+
+
+
+
+---
+
 > Building skills through practical experimentation and continuous learning.
