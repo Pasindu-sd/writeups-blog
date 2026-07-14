@@ -198,9 +198,46 @@ serch bar:
 
 ![[Pasted image 20260704235519.png]]
 
-Natas leve 10 Password :
+Natas level 10 Password :
 ```
 EgjlkzB6E8LJyf2Obt4q7q4ewt5ZWSNv
 ```
 
+
+----
+
+## Natas Level  10 -->  11
+
+
+in the search bar :
+```
+c /etc/natas_webpass/natas11
+```
+
+![[Pasted image 20260714105657.png]]
+
+
+Natas level 11 Password:
+```
+VUMQDmuITOEHzhviLE5V0VG9cPMQkyxd
+```
+
+
+---
+
+## Natas Level  11 -->  12
+
+![[Pasted image 20260714231929.png]]
+
+![[Pasted image 20260714232010.png]]
+
+
+![[Pasted image 20260714235201.png]]
+
+
+![[Pasted image 20260714234857.png]]
+
+![[Pasted image 20260714235441.png]]
+
+![[Pasted image 20260714235527.png]]
 
