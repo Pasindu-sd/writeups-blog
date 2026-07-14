@@ -225,19 +225,3 @@ VUMQDmuITOEHzhviLE5V0VG9cPMQkyxd
 
 ---
 
-## Natas Level  11 -->  12
-
-![[Pasted image 20260714231929.png]]
-
-![[Pasted image 20260714232010.png]]
-
-
-![[Pasted image 20260714235201.png]]
-
-
-![[Pasted image 20260714234857.png]]
-
-![[Pasted image 20260714235441.png]]
-
-![[Pasted image 20260714235527.png]]
-
