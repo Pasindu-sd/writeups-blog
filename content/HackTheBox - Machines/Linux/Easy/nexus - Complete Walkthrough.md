@@ -1,5 +1,5 @@
 
-
+<<<<<<<<< Temporary merge branch 1
 # #HTB 
 
 ![[Pasted image 20260719171806.png|281]]
@@ -40,7 +40,9 @@ PORT   STATE SERVICE VERSION
 |_http-title: Did not follow redirect to http://nexus.htb/
 ```
 
-
+=========
+Add-New-Writeup
+>>>>>>>>> Temporary merge branch 2
 
 ![[Pasted image 20260719013935.png]]
 
@@ -49,9 +51,10 @@ Port 80 redirected to `http://nexus.htb/`, so this was added to `/etc/hosts` and
 ---
 
 ### Step 2: Website Recon - Finding a Valid Email
-
+=========
+Add-New-Writeup
 ![[Pasted image 20260719014056.png]]
-
+>>>>>>>>> Temporary merge branch 2
 
 Browsing `http://nexus.htb` revealed a **Nexus Energy Authority** corporate site. A "Careers" job posting for an **Operations Specialist – Customer Platforms** role leaked an internal contact:
 
@@ -60,11 +63,11 @@ Questions? Reach out to our hiring manager j.matthew@nexus.htb
 ```
 
 
+<<<<<<<<< Temporary merge branch 1
+=========
 ![[Pasted image 20260719014026.png]]
 
-
-![[Pasted image 20260719014026.png]]
-
+![[Pasted image 20260719082532.png]]
 
 ![[Pasted image 20260719014056.png]]
 
@@ -75,7 +78,7 @@ Questions? Reach out to our hiring manager j.matthew@nexus.htb
 
 ![[Pasted image 20260719014242.png]]
 
-
+>>>>>>>>> Temporary merge branch 2
 
 
 ![[Pasted image 20260719082532.png]]
@@ -114,6 +117,13 @@ Browsing to `git.nexus.htb` confirmed a Gitea instance:
 An **`admin`** account on Gitea had a public repository, **`krayin-docker-setup`**, containing the Docker Compose configuration for the billing CRM deployment:
 
 
+![[Pasted image 20260719014026.png]]
+
+
+![[Pasted image 20260719014056.png]]
+
+
+
 ![[Pasted image 20260719014156.png]]
 
 Critically, the **commit history** of the `.env` file in this repo showed an earlier version of the file with the database password **committed in plaintext before being redacted**:
@@ -133,14 +143,19 @@ This leaked:
 
 Combined with the email `j.matthew@nexus.htb` found earlier, this gave a credential pair to try against the CRM login.
 
+
 ---
+
+
+![[Pasted image 20260719082532.png]]
+
+
+![[Pasted image 20260719082532.png]]
+
 
 ### Step 5: Krayin CRM Login & Version Fingerprinting
 
 `billing.nexus.htb` hosts a **Krayin CRM** (open-source CRM by Webkul) admin login:
-
-![[Pasted image 20260719082532.png]]
-
 
 
 
@@ -153,7 +168,9 @@ Logging in with `j.matthew@nexus.htb` / `N27xh!!2ucY04` succeeded, landing on th
 
 
 Fingerprinting the version and searching for known vulnerabilities revealed **Krayin CRM 2.2.x** is affected by several critical CVEs, most notably an **authenticated RCE via unrestricted file upload**:
+=========
 
+>>>>>>>>> Temporary merge branch 2
 
 ![[Pasted image 20260719093900.png]]
 
@@ -335,13 +352,14 @@ Git's CLI (`git add`, `git mktree`) refuses filenames containing a literal `/` o
 
 Using the `jones` credentials against `git.nexus.htb`:
 
-
+<<<<<<<<< Temporary merge branch 1
+=========
 password- `y27xb3ha!!74GbR`
 
 ![[Pasted image 20260719105425.png]]
 
 
-
+>>>>>>>>> Temporary merge branch 2
 ![[Pasted image 20260719105425.png]]
 
 
@@ -420,12 +438,21 @@ root@nexus:~#
 root@nexus:~# cat /root/root.txt
 ```
 
-
+<<<<<<<<< Temporary merge branch 1
 
 ### Step 14 : Lab Solved
+
+password- `y27xb3ha!!74GbR`
+
+![[Pasted image 20260719105425.png]]
+
+
+![[Pasted image 20260719105425.png]]
+
 
 ![[Pasted image 20260719175350.png]]
 
 ---
 ---
-
+=========
+>>>>>>>>> Temporary merge branch 2
