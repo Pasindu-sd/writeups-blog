@@ -1,3 +1,6 @@
+
+![[Pasted image 20260719180754.png|281]]
+
 # HTB: Nexus
 
 **Machine IP:** `10.129.234.54`
