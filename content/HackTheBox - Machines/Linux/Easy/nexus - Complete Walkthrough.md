@@ -1,4 +1,5 @@
 
+
 # #HTB 
 
 ![[Pasted image 20260719171806.png|281]]
@@ -40,6 +41,7 @@ PORT   STATE SERVICE VERSION
 ```
 
 
+
 ![[Pasted image 20260719013935.png]]
 
 Port 80 redirected to `http://nexus.htb/`, so this was added to `/etc/hosts` and the site was browsed.
@@ -48,11 +50,31 @@ Port 80 redirected to `http://nexus.htb/`, so this was added to `/etc/hosts` and
 
 ### Step 2: Website Recon - Finding a Valid Email
 
+![[Pasted image 20260719014056.png]]
+
+
 Browsing `http://nexus.htb` revealed a **Nexus Energy Authority** corporate site. A "Careers" job posting for an **Operations Specialist – Customer Platforms** role leaked an internal contact:
 
 ```
 Questions? Reach out to our hiring manager j.matthew@nexus.htb
 ```
+
+
+![[Pasted image 20260719014026.png]]
+
+
+![[Pasted image 20260719014026.png]]
+
+
+![[Pasted image 20260719014056.png]]
+
+
+
+![[Pasted image 20260719014156.png]]
+
+
+![[Pasted image 20260719014242.png]]
+
 
 
 
@@ -117,6 +139,11 @@ Combined with the email `j.matthew@nexus.htb` found earlier, this gave a credent
 
 `billing.nexus.htb` hosts a **Krayin CRM** (open-source CRM by Webkul) admin login:
 
+![[Pasted image 20260719082532.png]]
+
+
+
+
 ![[Pasted image 20260719082557.png]]
 
 
@@ -124,7 +151,9 @@ Logging in with `j.matthew@nexus.htb` / `N27xh!!2ucY04` succeeded, landing on th
 
 ![[Pasted image 20260719093811.png]]
 
+
 Fingerprinting the version and searching for known vulnerabilities revealed **Krayin CRM 2.2.x** is affected by several critical CVEs, most notably an **authenticated RCE via unrestricted file upload**:
+
 
 ![[Pasted image 20260719093900.png]]
 
@@ -306,6 +335,13 @@ Git's CLI (`git add`, `git mktree`) refuses filenames containing a literal `/` o
 
 Using the `jones` credentials against `git.nexus.htb`:
 
+
+password- `y27xb3ha!!74GbR`
+
+![[Pasted image 20260719105425.png]]
+
+
+
 ![[Pasted image 20260719105425.png]]
 
 
@@ -385,9 +421,11 @@ root@nexus:~# cat /root/root.txt
 ```
 
 
+
 ### Step 14 : Lab Solved
 
 ![[Pasted image 20260719175350.png]]
 
 ---
 ---
+
