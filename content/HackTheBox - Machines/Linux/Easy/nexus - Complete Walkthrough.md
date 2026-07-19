@@ -58,6 +58,9 @@ Questions? Reach out to our hiring manager j.matthew@nexus.htb
 
 ![[Pasted image 20260719082532.png]]
 
+![[Pasted image 20260719014056.png]]
+
+
 This gave a **valid internal username/email**: `j.matthew@nexus.htb` — useful later once a password was found.
 
 ---
@@ -92,6 +95,13 @@ Browsing to `git.nexus.htb` confirmed a Gitea instance:
 An **`admin`** account on Gitea had a public repository, **`krayin-docker-setup`**, containing the Docker Compose configuration for the billing CRM deployment:
 
 
+![[Pasted image 20260719014026.png]]
+
+
+![[Pasted image 20260719014056.png]]
+
+
+
 ![[Pasted image 20260719014156.png]]
 
 Critically, the **commit history** of the `.env` file in this repo showed an earlier version of the file with the database password **committed in plaintext before being redacted**:
@@ -111,11 +121,21 @@ This leaked:
 
 Combined with the email `j.matthew@nexus.htb` found earlier, this gave a credential pair to try against the CRM login.
 
+
 ---
+
+
+![[Pasted image 20260719082532.png]]
+
+
+![[Pasted image 20260719082532.png]]
+
 
 ### Step 5: Krayin CRM Login & Version Fingerprinting
 
 `billing.nexus.htb` hosts a **Krayin CRM** (open-source CRM by Webkul) admin login:
+
+
 
 ![[Pasted image 20260719082557.png]]
 
@@ -123,6 +143,7 @@ Combined with the email `j.matthew@nexus.htb` found earlier, this gave a credent
 Logging in with `j.matthew@nexus.htb` / `N27xh!!2ucY04` succeeded, landing on the admin dashboard:
 
 ![[Pasted image 20260719093811.png]]
+
 
 Fingerprinting the version and searching for known vulnerabilities revealed **Krayin CRM 2.2.x** is affected by several critical CVEs, most notably an **authenticated RCE via unrestricted file upload**:
 
@@ -386,6 +407,14 @@ root@nexus:~# cat /root/root.txt
 
 
 ### Step 14 : Lab Solved
+
+password- `y27xb3ha!!74GbR`
+
+![[Pasted image 20260719105425.png]]
+
+
+![[Pasted image 20260719105425.png]]
+
 
 ![[Pasted image 20260719175350.png]]
 
