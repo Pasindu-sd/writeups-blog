@@ -1,9 +1,11 @@
 
+Add-New-Writeup
 
 ![[Pasted image 20260719013935.png]]
 
 
 
+Add-New-Writeup
 ![[Pasted image 20260719014056.png]]
 
 
@@ -12,19 +14,34 @@
 ![[Pasted image 20260719014026.png]]
 
 
+![[Pasted image 20260719014026.png]]
+
+
+![[Pasted image 20260719014056.png]]
+
+
+
 ![[Pasted image 20260719014156.png]]
 
 
 ![[Pasted image 20260719014242.png]]
 
 
+
 ![[Pasted image 20260719082532.png]]
+
+
+![[Pasted image 20260719082532.png]]
+
+
 
 
 ![[Pasted image 20260719082557.png]]
 
 
 ![[Pasted image 20260719093811.png]]
+
+
 
 ![[Pasted image 20260719093900.png]]
 
@@ -58,8 +75,11 @@ python3 52629.py -t http://billing.nexus.htb/ -u j.matthew@nexus.htb -p N27xhnan
 
 
 password- `y27xb3ha!!74GbR`
+
 ![[Pasted image 20260719105425.png]]
 
+
+![[Pasted image 20260719105425.png]]
 
 
 
