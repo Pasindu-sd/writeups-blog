@@ -4,6 +4,7 @@
 
 ![[Pasted image 20260721223243.png|281]]
 
+# HTB: Connected
 
 **Machine IP:** `10.129.1.6`  
 **Difficulty:** Easy  
