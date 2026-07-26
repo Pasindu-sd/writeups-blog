@@ -2,8 +2,7 @@
 # #HTB 
 
 
-
-![[Pasted image 20251231001836.png|254]]
+![[Pasted image 20251231001836.png|281]]
 
 # HTB: Vaccine
 
