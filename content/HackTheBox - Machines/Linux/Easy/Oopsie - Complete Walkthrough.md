@@ -2,7 +2,7 @@
 # #HTB 
 
 
-![[Pasted image 20251230070915.png|309]]
+![[Pasted image 20251230070915.png|281]]
 
 
 # HTB: Oopsie

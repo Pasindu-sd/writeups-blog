@@ -1,9 +1,8 @@
 
-
 # #HTB 
 
 
-![[Pasted image 20260130204456.png]]
+![[Pasted image 20260130204456.png|281]]
 
 
 # HTB: Expressway

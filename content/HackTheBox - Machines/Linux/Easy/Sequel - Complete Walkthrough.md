@@ -2,7 +2,7 @@
 # #HTB 
 
 
-![[Pasted image 20260508103123.png|267]]
+![[Pasted image 20260508103123.png|281]]
 
 # HTB: Sequel
 
