@@ -2,10 +2,9 @@
 # #HTB 
 
 
-![[Pasted image 20260103110325.png|286]]
+![[Pasted image 20260103110325.png|281]]
 
-
-# HTB: Cap - Complete Walkthrough
+# HTB: Cap
 
 **Machine IP:** `10.10.10.245`  
 **Difficulty:** Easy  
