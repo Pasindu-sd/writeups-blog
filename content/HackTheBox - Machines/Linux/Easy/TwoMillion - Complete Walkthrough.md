@@ -2,7 +2,7 @@
 # #HTB 
 
 
-![[Pasted image 20260104135744.png]]
+![[Pasted image 20260104135744.png|281]]
 
 # HTB: TwoMillion
 
