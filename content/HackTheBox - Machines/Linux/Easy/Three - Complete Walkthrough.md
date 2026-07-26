@@ -1,9 +1,8 @@
 
-
 # #HTB 
 
 
-![[Pasted image 20251229105913.png]]
+![[Pasted image 20251229105913.png|281]]
 
 # HTB: Three
 
