@@ -13,6 +13,17 @@
 
 ---
 
+## Tools Used
+- `rustscan` - Fast port discovery
+- `nmap` - Service version detection
+- `metasploit` - CVE-2025-32432 exploitation
+- `mysql` - Database enumeration
+- `hashcat` - Password cracking
+- `ssh` - Remote access
+- `curl` - HTTP requests
+
+---
+
 
 ## Step 1: Reconnaissance - Port Scanning
 
