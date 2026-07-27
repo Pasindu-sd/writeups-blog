@@ -10,7 +10,7 @@
 **Difficulty:** Easy  
 **OS:** Linux
 
-
+----
 
 ## Step 1: Reconnaissance - Port Scanning
 
