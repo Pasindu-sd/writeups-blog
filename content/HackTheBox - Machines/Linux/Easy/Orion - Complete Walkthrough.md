@@ -240,6 +240,12 @@ root@orion:~# cat /root/root.txt
 ![[Pasted image 20260726152506.png]]
 
 
+---
+
+## Step 10: Lab Solved
+
+![[Pasted image 20260727212826.png]]
+
 
 
 ---
