@@ -259,5 +259,12 @@ docker exec -u 0 privbox cat /mnt/root/root.txt
 
 
 ---
+
+## Step 7: Lab Solved
+
+![[Pasted image 20260730231539.png]]
+
+
+---
 ---
 
