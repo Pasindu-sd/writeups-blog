@@ -24,6 +24,8 @@
 - `kubectl` - Kubernetes enumeration
 
 ---
+---
+
 
 ## Step 1: Reconnaissance - Port Scanning
 
@@ -509,4 +511,10 @@ b262d4acd59e9715312ba3d59021f921
 ---
 
 ## Step 8: Machine Owned
+
+![[Pasted image 20260809081250.png]]
+
+
+---
+---
 
