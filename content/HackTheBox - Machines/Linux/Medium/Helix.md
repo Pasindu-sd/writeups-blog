@@ -72,5 +72,53 @@ Get Reverse Shell
 
 ![[Pasted image 20260811220959.png]]
 
+decrypt and open pdf
+
+```bash
+└─$ qpdf --password=operator1 --decrypt "Operator Control & Safety Guide.pdf" decrypted.pdf
+
+```
+
+```bash
+└─$ xdg-open decrypted.pdf 
+```
+
+
+
+![[Pasted image 20260811231408.png]]
+
+
+
+![[Pasted image 20260811231541.png]]
+
+
+
+![[Pasted image 20260811231611.png]]
+
+
+
+![[Pasted image 20260811231622.png]]
+
+
+
+
+![[Pasted image 20260811231902.png]]
+
+
+
+![[Pasted image 20260811231916.png]]
+
+
+
+![[Pasted image 20260811231938.png]]
+
+
+
+![[Pasted image 20260811231948.png]]
+
+
+
+![[Pasted image 20260811232005.png]]
+
 
 
