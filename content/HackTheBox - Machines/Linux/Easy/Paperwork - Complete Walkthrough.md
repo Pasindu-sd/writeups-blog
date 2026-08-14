@@ -79,7 +79,7 @@ Visiting `http://paperwork.htb` reveals an "Intranet - Document Archiving Serv
 - Information about the LPD protocol (RFC 1179)
 - A target queue named `archive_intake`
 
-**Key Discovery:** The download link contains the source code for the LPD server!
+**Key Discovery:** The download link contains the source code for the LPD server
 
 ![[Pasted image 20260813131459.png]]
 
@@ -92,6 +92,8 @@ unzip paperwork-archive-v1.02.zip
 - Understand exactly how the application works
 - Identify vulnerabilities that aren't visible from the outside
 - Craft precise exploits
+
+
 
 ---
 
@@ -238,8 +240,8 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 ![[Pasted image 20260813131541.png]]
 
-
 **Why This Matters:** The initial shell is limited. This gives us a proper interactive terminal.
+
 
 
 ---
@@ -328,7 +330,7 @@ nc -nv 10.129.248.117 9999
 ```
 
 **Response:**
-![[Pasted image 20260813134706.png]]
+![[Pasted image 20260813134706.png|700]]
 
 **What This Tells Us:** The service is a fake HP JetDirect printer that responds to PJL (Printer Job Language) commands.
 
