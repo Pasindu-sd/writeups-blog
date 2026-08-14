@@ -214,7 +214,7 @@ python3 exploit.py
 ```
 
 
-![[Pasted image 20260813131517.png]]
+![[Pasted image 20260813131517.png|700]]
 
 **What Happens:**
 1. Our script connects to port 1515
@@ -355,7 +355,7 @@ s.close()
 ```
 
 **Output:**
-![[Pasted image 20260813134649.png]]
+![[Pasted image 20260813134649.png|700]]
 ### Downloading the Source Code
 ```python
 #!/usr/bin/env python3
@@ -486,7 +486,7 @@ print(f"[+] Response: {response}")
 3. This allows us to SSH in as the `archivist` user
 
 
-![[Pasted image 20260813134558.png]]
+![[Pasted image 20260813134558.png|700]]
 
 
 ### SSH Access as archivist
@@ -676,7 +676,7 @@ The password we discovered in `/etc/paperwork/admin_pins.conf` is reused as th
 Congratulations! We have successfully compromised the Paperwork machine.
 
 
-![[Pasted image 20260813190142.png]]
+![[Pasted image 20260813190142.png|700]]
 
 
 ---
