@@ -31,6 +31,7 @@
 nmap -n -Pn -sC -sV 10.129.1.233
 ```
 
+
 ![[Pasted image 20260730225105.png]]
 
 **Open Ports:**
