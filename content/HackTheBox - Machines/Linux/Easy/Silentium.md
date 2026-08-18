@@ -404,3 +404,9 @@ The machine is fully owned! We successfully compromised the target by chaining a
 ## Step 8: Machine Solved
 
 
+![[Pasted image 20260818220411.png]]
+
+
+----
+----
+
