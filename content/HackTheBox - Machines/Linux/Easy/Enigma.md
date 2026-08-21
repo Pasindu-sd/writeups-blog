@@ -77,3 +77,39 @@ using sarah lgionfg
 
 
 
+![[Pasted image 20260821222959.png]]
+
+
+
+![[Pasted image 20260821222930.png]]
+
+
+
+![[Pasted image 20260821222940.png]]
+
+
+![[Pasted image 20260821223019.png]]
+
+
+
+![[Pasted image 20260821223043.png]]
+
+
+
+![[Pasted image 20260821223111.png]]
+
+
+
+![[Pasted image 20260821223126.png]]
+
+
+
+
+![[Pasted image 20260821223156.png]]
+
+
+
+![[Pasted image 20260821223205.png]]
+
+
+
