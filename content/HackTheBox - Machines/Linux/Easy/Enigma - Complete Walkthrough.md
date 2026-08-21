@@ -718,4 +718,11 @@ root@enigma:~# cat /root/root.txt
 
 ## Step 13: Machine Owned
 
+![[Pasted image 20260821233600.png|700]]
+
+
+
+---
+---
+
 
