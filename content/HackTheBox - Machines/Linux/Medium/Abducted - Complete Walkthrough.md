@@ -39,3 +39,56 @@
 
 
 
+![[Pasted image 20260901152946.png]]
+
+
+
+![[Pasted image 20260901153005.png]]
+
+
+
+![[Pasted image 20260901153024.png]]
+
+
+
+
+![[Pasted image 20260901154325.png]]
+
+
+
+
+
+![[Pasted image 20260901154707.png]]
+
+
+
+
+![[Pasted image 20260901154726.png]]
+
+
+
+
+![[Pasted image 20260901154820.png]]
+
+
+
+![[Pasted image 20260901160451.png]]
+
+
+
+![[Pasted image 20260901160539.png]]
+
+
+
+![[Pasted image 20260901160602.png]]
+
+
+
+![[Pasted image 20260901160618.png]]
+
+
+
+![[Pasted image 20260901160638.png]]
+
+
+
