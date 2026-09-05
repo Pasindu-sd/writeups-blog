@@ -5,7 +5,6 @@
 ![[Pasted image 20260809072714.png|281]]
 
 
-
 # HackTheBox: FireFlow
 
 **Machine IP:**  `10.129.5.237` / `10.129.6.42`  
