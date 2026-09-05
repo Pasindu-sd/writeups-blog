@@ -2,7 +2,8 @@
 # #HTB 
 
 
-![[Pasted image 20260124115631.png|247]]
+![[Pasted image 20260124115631.png|281]]
+
 
 # HTB: HackNet
 
