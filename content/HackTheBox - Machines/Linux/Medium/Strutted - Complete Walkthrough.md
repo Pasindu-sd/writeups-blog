@@ -2,7 +2,8 @@
 # #HTB 
 
 
-![[Pasted image 20260509123730.png|239]]
+![[Pasted image 20260509123730.png|281]]
+
 
 # HTB: Strutted
 
