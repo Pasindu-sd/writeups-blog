@@ -5,7 +5,6 @@
 ![[Pasted image 20251228193812.png|281]]
 
 
-
 # HTB: Crocodile
 
 **Machine IP:** `10.129.49.130`  

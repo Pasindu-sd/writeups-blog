@@ -2,7 +2,8 @@
 # #HTB 
 
 
-![[Pasted image 20260116110918.png|259]]
+![[Pasted image 20260116110918.png|281]]
+
 
 # HTB: Previous
 
