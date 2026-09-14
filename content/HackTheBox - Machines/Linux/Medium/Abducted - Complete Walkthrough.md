@@ -131,7 +131,7 @@ sudo tcpdump -ni tun0 icmp
 
 ![[Pasted image 20260901143144.png]]
 
-**Result:** We receive ICMP packets, confirming command execution!
+**Result:** We receive ICMP packets, confirming command execution
 
 
 
