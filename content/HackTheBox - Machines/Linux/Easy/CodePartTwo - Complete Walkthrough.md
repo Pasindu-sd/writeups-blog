@@ -2,7 +2,8 @@
 # #HTB 
 
 
-![[Pasted image 20260202105830.png]]
+![[Pasted image 20260202105830.png|281]]
+
 
 # HTB: CodePartTwo
 

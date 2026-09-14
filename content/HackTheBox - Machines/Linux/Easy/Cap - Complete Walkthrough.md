@@ -4,6 +4,7 @@
 
 ![[Pasted image 20260103110325.png|281]]
 
+
 # HTB: Cap
 
 **Machine IP:** `10.10.10.245`  
