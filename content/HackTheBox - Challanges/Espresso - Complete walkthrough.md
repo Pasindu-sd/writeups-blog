@@ -57,6 +57,8 @@ First non-FF byte at: 0x1000
 b'\xe9\x03\x02 D\x06\x08@\xee...v6.1-dev-2748-g490691bc6'
 ```
 
+![[Pasted image 20260920212458.png]]
+
 First `0x1000` bytes are `0xFF` — classic erased flash padding. Real content starts at `0x1000`. The magic byte `0xE9` is the ESP32 bootloader signature.
 
 ---
@@ -201,7 +203,7 @@ I (3634) efuse_init: Min chip rev:   v0.0
 I (3637) efuse_init: Chip rev:       v0.0
 I (3931) main_task: Started on CPU0
 I (3971) main_task: Calling app_main()
-I (3991) main: HTB{3mul4ting_hw_is_s0_c00l!!!}
+I (3991) main: HTB{**************************}
 I (3991) main_task: Returned from app_main()
 ```
 
@@ -214,7 +216,7 @@ The QEMU ESP32 emulator satisfies the hardware genuineness check — the eFuse M
 ## Result
 
 ```
-HTB{3mul4ting_hw_is_s0_c00l!!!}
+HTB{**************************************}
 ```
 
 ---
@@ -251,7 +253,7 @@ firmware.bin
 └─────────────────────────┘
       │
       ▼
- HTB{3mul4ting_hw_is_s0_c00l!!!}
+ HTB{********************************}
 ```
 
 ---
