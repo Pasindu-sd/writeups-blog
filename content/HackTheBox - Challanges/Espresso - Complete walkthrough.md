@@ -5,9 +5,11 @@
 ![[Pasted image 20260920210240.png|700]]
 
 
-# HTB Challenge — Espresso Firmware
+# HTB Espresso Writeup
 
-**Category:** Hardware / Reverse Engineering  
+**Category:** Hardware  
+**Difficulty:** Easy  
+**Platform:** HackTheBox
 
 ---
 
@@ -15,11 +17,15 @@
 
 > Someone leaked the new Espresso firmware, can you try to figure out what it does?
 
-**Given file:** `firmware.bin` (4 MiB)
+We are provided with a single file:
+
+- `firmware.bin` (4 MiB)
+
+The objective is to analyze the firmware, understand what it does, and extract the flag.
 
 ---
 
-## Step 1 — Initial Triage
+## Initial Analysis
 
 First, check what kind of file this is:
 
@@ -28,58 +34,43 @@ file firmware.bin
 # Output: data
 ```
 
-`file` doesn't recognize it. Check the hex dump manually:
+`file` command doesn't recognize it. Manually inspect the hex:
 
 ```python
 python3 -c "
 with open('firmware.bin','rb') as f:
-    data = f.read(512)
-print(data)
-"
-```
+    data = f.read()
 
-First 0x1000 bytes are all `0xFF` — classic erased flash padding. The real content starts at offset `0x1000`.
-
----
-
-## Step 2 — Identify the Format
-
-Use `esptool` to inspect the image:
-
-```bash
-pip install esptool
-
-# Extract the app partition first
-python3 -c "
-import struct
-data = open('firmware.bin','rb').read()
-# Find partition table at 0x8000
-off = 0x8000
-while True:
-    entry = data[off:off+32]
-    if entry[:2] != b'\xaaP': break
-    magic, ptype, subtype, addr, size = struct.unpack('<HBBII', entry[:12])
-    label = entry[12:28].split(b'\x00')[0].decode()
-    print(hex(off), ptype, subtype, hex(addr), hex(size), label)
-    off += 32
+# Find first non-FF byte
+i = 0
+while i < len(data) and data[i] == 0xFF:
+    i += 1
+print('First non-FF byte at:', hex(i))
+print(data[i:i+64])
 "
 ```
 
 **Output:**
 
 ```
-0x8000  1 2  0x9000   0x6000  nvs
-0x8020  1 1  0xf000   0x1000  phy_init
-0x8040  0 0  0x10000  0x100000 factory
+First non-FF byte at: 0x1000
+b'\xe9\x03\x02 D\x06\x08@\xee...v6.1-dev-2748-g490691bc6'
 ```
 
-This is a **full ESP32 flash dump** with a standard partition table. Extract the `factory` app:
+First `0x1000` bytes are `0xFF` — classic erased flash padding. Real content starts at `0x1000`. The magic byte `0xE9` is the ESP32 bootloader signature.
+
+---
+
+## Identifying the Format
+
+Use `esptool` to parse the image:
 
 ```bash
+pip install esptool
 python3 -m esptool --chip esp32 image-info firmware.bin
 ```
 
-**Key output:**
+**Output:**
 
 ```
 Project name: espresso
@@ -87,17 +78,47 @@ App version:  2c1ec8fd-dirty
 Compile time: Feb 28 2026 03:10:39
 Chip ID:      0 (ESP32)
 Entry point:  0x400814ac
+ESP-IDF:      v6.1-dev-2748-g490691bc61
 ```
+
+This is a **full ESP32 flash dump**. Parse the partition table at `0x8000`:
+
+```python
+import struct
+data = open('firmware.bin','rb').read()
+off = 0x8000
+while True:
+    entry = data[off:off+32]
+    if entry[:2] != b'\xaaP': break
+    magic, ptype, subtype, addr, size = struct.unpack('<HBBII', entry[:12])
+    label = entry[12:28].split(b'\x00')[0].decode()
+    print(hex(addr), hex(size), label)
+    off += 32
+```
+
+**Output:**
+
+```
+0x9000   0x6000   nvs
+0xf000   0x1000   phy_init
+0x10000  0x100000 factory   ← main app
+```
+
+|Partition|Offset|Size|Purpose|
+|---|---|---|---|
+|nvs|0x9000|24 KB|Non-volatile storage|
+|phy_init|0xF000|4 KB|WiFi PHY calibration|
+|factory|0x10000|1 MB|**Main application**|
 
 ---
 
-## Step 3 — Static Analysis (Strings)
+## Static Analysis — Strings
 
 ```bash
 strings -n 6 firmware.bin | grep -v "^ESP_ERR\|IDF/components"
 ```
 
-Three suspicious strings stand out — clustered together in the binary:
+Three suspicious strings stand out, clustered together in the binary:
 
 ```
 flag did not generate correctly.
@@ -105,43 +126,57 @@ It seems you are running the firmware on cloned hadware.
 Buy the real hardware, or perhaps try to emulate it. ;)
 ```
 
-The third string is a hint from the challenge author:
+The third string is a direct hint from the challenge author:
 
 > **"try to emulate it"** 👈
 
-No flag string exists anywhere in the binary. This means the **flag is generated at runtime** from the chip's hardware identity (eFuse MAC address), not stored statically.
+Further string analysis reveals the internal logic:
 
-Further string analysis reveals:
+```
+get_efuse_factory_mac    ← reads unique chip MAC from eFuse BLK0
+main                     ← logging TAG used for ESP_LOG
+```
 
-- TAG = `"main"` — the logging tag for the main function
-- `get_efuse_factory_mac` — function that reads the unique chip MAC from eFuse BLK0
-- Anti-clone logic: if running on genuine hardware → generate flag; otherwise → print error
+**Key finding:** No flag string exists anywhere in the binary. The flag is **generated at runtime** from the chip's eFuse MAC address — it only appears when the firmware detects it is running on genuine Espressif hardware.
 
----
+The logic flow is:
 
-## Step 4 — Build Espressif QEMU
-
-Standard QEMU doesn't support ESP32. Espressif maintains a fork with ESP32 machine support.
-
-```bash
-# Install dependencies
-sudo apt install -y libglib2.0-dev libpixman-1-dev libgcrypt-dev \
-  libslirp-dev libfdt-dev zlib1g-dev libssl-dev cmake ninja-build
-
-# Clone Espressif QEMU
-git clone https://github.com/espressif/qemu.git
-cd qemu
-
-# Configure (no --enable-debug to avoid -Werror breaking build)
-./configure --target-list=xtensa-softmmu --enable-gcrypt
-
-# Build (~15 minutes)
-make -j$(nproc)
+```
+Boot
+ └─► read eFuse MAC address
+       ├─► MAC valid (genuine chip) → generate flag → print over UART
+       └─► MAC invalid (clone)      → print "cloned hardware" error
 ```
 
 ---
 
-## Step 5 — Emulate the Firmware
+## Building Espressif QEMU
+
+Standard QEMU does not support ESP32. Espressif maintains an official fork with full Xtensa/ESP32 machine emulation.
+
+### Install Dependencies
+
+```bash
+sudo apt install -y libglib2.0-dev libpixman-1-dev libgcrypt-dev \
+  libslirp-dev libfdt-dev zlib1g-dev libssl-dev cmake ninja-build
+```
+
+### Clone and Build
+
+```bash
+git clone https://github.com/espressif/qemu.git
+cd qemu
+
+# Note: omit --enable-debug to avoid -Werror breaking build on GCC 15
+./configure --target-list=xtensa-softmmu --enable-gcrypt
+
+make -j$(nproc)
+# Build takes ~15 minutes
+```
+
+---
+
+## Emulating the Firmware
 
 ```bash
 cd ~/Downloads/hw_espresso
@@ -153,21 +188,30 @@ qemu/build/qemu-system-xtensa \
   -serial mon:stdio
 ```
 
-**UART Output:**
+![[Pasted image 20260920211716.png]]
+
+
+### UART Output
 
 ```
 I (3627) app_init: Project name:     espresso
 I (3628) app_init: App version:      2c1ec8fd-dirty
 I (3629) app_init: Compile time:     Feb 28 2026 03:10:39
+I (3634) efuse_init: Min chip rev:   v0.0
 I (3637) efuse_init: Chip rev:       v0.0
+I (3931) main_task: Started on CPU0
 I (3971) main_task: Calling app_main()
 I (3991) main: HTB{3mul4ting_hw_is_s0_c00l!!!}
 I (3991) main_task: Returned from app_main()
 ```
 
+![[Pasted image 20260920211652.png]]
+
+The QEMU ESP32 emulator satisfies the hardware genuineness check — the eFuse MAC read succeeds, the flag is generated and printed over the virtual UART.
+
 ---
 
-## Flag
+## Result
 
 ```
 HTB{3mul4ting_hw_is_s0_c00l!!!}
@@ -175,19 +219,54 @@ HTB{3mul4ting_hw_is_s0_c00l!!!}
 
 ---
 
-## Summary
+## Challenge Solved 
 
-|Step|Action|
-|---|---|
-|1|Identified file as ESP32 full flash dump|
-|2|Parsed partition table — found `factory` app at `0x10000`|
-|3|String analysis revealed anti-clone check + emulation hint|
-|4|Built Espressif's QEMU fork with Xtensa/ESP32 support|
-|5|Emulated firmware — flag printed over virtual UART|
 
-## Key Takeaway
+![[Pasted image 20260920211623.png|700]]
 
-The firmware reads the ESP32's unique **eFuse MAC address** and derives the flag from it at runtime. The flag is never stored in the binary — it only appears when the firmware believes it's running on real (or emulated) Espressif hardware. The challenge hint _"try to emulate it"_ pointed directly to the solution: use Espressif's QEMU fork to satisfy the hardware check and obtain the flag.
+
+---
+
+## Communication Flow
+
+```
+firmware.bin
+      │
+      ▼
+┌─────────────────────────┐
+│  ESP32 Flash Layout     │
+├─────────────────────────┤
+│  Bootloader  @ 0x1000   │
+│  Part. Table @ 0x8000   │
+│  NVS         @ 0x9000   │
+│  Factory App @ 0x10000  │
+└─────────────────────────┘
+      │
+      ▼
+┌─────────────────────────┐
+│  app_main()             │
+│  get_efuse_factory_mac()│
+│  → flag generation      │
+│  → UART print           │
+└─────────────────────────┘
+      │
+      ▼
+ HTB{3mul4ting_hw_is_s0_c00l!!!}
+```
+
+---
+
+## Conclusion
+
+Although this is a hardware challenge, **HTB Espresso** requires no physical hardware at all. The key insight is recognizing that:
+
+1. The firmware performs an **eFuse-based hardware authenticity check**
+2. The flag is **never stored statically** — it is derived at runtime from the chip MAC
+3. The challenge hint _"try to emulate it"_ directly points to the solution
+
+Using Espressif's official QEMU fork, the ESP32 environment is faithfully emulated — including eFuse reads — allowing the firmware to pass its hardware check and reveal the flag over the virtual serial port.
+
+This challenge is an excellent introduction to **firmware analysis**, **embedded systems emulation**, and the ESP32 platform commonly seen in IoT hardware challenges.
 
 ---
 
