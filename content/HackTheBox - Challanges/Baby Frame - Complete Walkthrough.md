@@ -273,3 +273,7 @@ Although classified as a "Very Easy" challenge, **HTB Baby Frame** provides an e
 This challenge is highly recommended for anyone interested in aerospace cybersecurity or embedded protocol analysis.
 
 ---
+---
+
+_Written by: Pasindu (W.P.S.D. Wijesinghe)_  
+_Blog: pasindu-sd.github.io/writeups-blog_

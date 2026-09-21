@@ -73,3 +73,10 @@ The flag is successfully retrieved.
 |`.cache.util.os`|Navigate through cache to reach `os` module|
 |`.popen('command')`|Execute system command|
 |`.read()`|Read command output|
+
+
+---
+---
+
+_Written by: Pasindu (W.P.S.D. Wijesinghe)_  
+_Blog: pasindu-sd.github.io/writeups-blog_
