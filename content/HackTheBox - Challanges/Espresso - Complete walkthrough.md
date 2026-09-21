@@ -272,6 +272,7 @@ Using Espressif's official QEMU fork, the ESP32 environment is faithfully emulat
 This challenge is an excellent introduction to **firmware analysis**, **embedded systems emulation**, and the ESP32 platform commonly seen in IoT hardware challenges.
 
 ---
+---
 
 _Written by: Pasindu (W.P.S.D. Wijesinghe)_  
 _Blog: pasindu-sd.github.io/writeups-blog_
