@@ -16,11 +16,9 @@
 ## Challenge Description
 
 > Someone leaked the new Espresso firmware, can you try to figure out what it does?
-
+ 
 We are provided with a single file:
-
 - `firmware.bin` (4 MiB)
-
 The objective is to analyze the firmware, understand what it does, and extract the flag.
 
 ---
@@ -51,7 +49,6 @@ print(data[i:i+64])
 ```
 
 **Output:**
-
 ```
 First non-FF byte at: 0x1000
 b'\xe9\x03\x02 D\x06\x08@\xee...v6.1-dev-2748-g490691bc6'
@@ -61,19 +58,18 @@ b'\xe9\x03\x02 D\x06\x08@\xee...v6.1-dev-2748-g490691bc6'
 
 First `0x1000` bytes are `0xFF` — classic erased flash padding. Real content starts at `0x1000`. The magic byte `0xE9` is the ESP32 bootloader signature.
 
+
 ---
 
 ## Identifying the Format
 
 Use `esptool` to parse the image:
-
 ```bash
 pip install esptool
 python3 -m esptool --chip esp32 image-info firmware.bin
 ```
 
 **Output:**
-
 ```
 Project name: espresso
 App version:  2c1ec8fd-dirty
@@ -99,7 +95,6 @@ while True:
 ```
 
 **Output:**
-
 ```
 0x9000   0x6000   nvs
 0xf000   0x1000   phy_init
@@ -111,6 +106,7 @@ while True:
 |nvs|0x9000|24 KB|Non-volatile storage|
 |phy_init|0xF000|4 KB|WiFi PHY calibration|
 |factory|0x10000|1 MB|**Main application**|
+
 
 ---
 
@@ -130,7 +126,7 @@ Buy the real hardware, or perhaps try to emulate it. ;)
 
 The third string is a direct hint from the challenge author:
 
-> **"try to emulate it"** 👈
+> **"try to emulate it"** 
 
 Further string analysis reveals the internal logic:
 
@@ -149,6 +145,8 @@ Boot
        ├─► MAC valid (genuine chip) → generate flag → print over UART
        └─► MAC invalid (clone)      → print "cloned hardware" error
 ```
+
+
 
 ---
 
@@ -211,6 +209,8 @@ I (3991) main_task: Returned from app_main()
 
 The QEMU ESP32 emulator satisfies the hardware genuineness check — the eFuse MAC read succeeds, the flag is generated and printed over the virtual UART.
 
+
+
 ---
 
 ## Result
@@ -219,10 +219,11 @@ The QEMU ESP32 emulator satisfies the hardware genuineness check — the eFuse M
 HTB{**************************************}
 ```
 
+
+
 ---
 
 ## Challenge Solved 
-
 
 ![[Pasted image 20260920211623.png|700]]
 
