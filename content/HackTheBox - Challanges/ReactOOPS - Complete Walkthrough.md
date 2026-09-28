@@ -83,7 +83,7 @@ The `Next-Action` header causes the request to be processed as a Server Action r
 
 ## Vulnerability Overview
 
-**CVE-2025-55182** (also known as React2Shell) is a critical vulnerability affecting React Server Components and Next.js. The React Server Components "Flight" protocol deserializes attacker-controlled multipart form-data without validating prototype-chain access. By sending a crafted POST request with the `Next-Action: x` header, attackers can reach the `Function` constructor through a reference chain like `$1:__proto__:then` and `$1:constructor:constructor`, resulting in remote code execution on the server[](https://github.com/TheStingR/ReactOOPS-WriteUp#1
+**CVE-2025-55182** (also known as React2Shell) is a critical vulnerability affecting React Server Components and Next.js. The React Server Components "Flight" protocol deserializes attacker-controlled multipart form-data without validating prototype-chain access. By sending a crafted POST request with the `Next-Action: x` header, attackers can reach the `Function` constructor through a reference chain like `$1:__proto__:then` and `$1:constructor:constructor`, resulting in remote code execution on the server[](https://github.com/TheStingR/ReactOOPS-WriteUp#1)
 
 The vulnerable versions are `react-server-dom-{webpack,turbopack,parcel}` 19.0.0–19.2.0 and Next.js 15.x/16.x[](https://github.com/TheStingR/ReactOOPS-WriteUp#1)
 
@@ -140,12 +140,13 @@ Since the Dockerfile places the flag at `/app/flag.txt`, enumerate the applicati
 ├── node_modules/             # Dependencies
 ├── app/                       # Application source code
 ├── public/                    # Static assets
-├── flag.txt                   # ✅ TARGET FILE (mode 600)
+├── flag.txt                   # TARGET FILE (mode 600)
 ├── package.json
 └── tsconfig.json
 ```
 
 **Critical Finding:** Flag file exists at `/app/flag.txt` with restrictive permissions (600).
+
 
 
 ---
