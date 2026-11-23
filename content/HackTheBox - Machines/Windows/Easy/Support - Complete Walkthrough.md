@@ -8,8 +8,6 @@
 **Machine Name:** Support  
 **Difficulty:** Easy  
 **OS:** Windows  
-**Key Techniques:** SMB Enumeration, .NET Decompilation, LDAP Enumeration, Resource-Based Constrained Delegation (RBCD)
-
 
 ---
 
