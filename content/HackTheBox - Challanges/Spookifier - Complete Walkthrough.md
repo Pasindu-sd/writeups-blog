@@ -2,6 +2,7 @@
 # #HTB 
 
 
+
 # Spookifier - SSTI Exploitation Write-up
 
 ## Vulnerability Type
